@@ -1,0 +1,79 @@
+<%@page import="src.models.processus.Reparation"%>
+<%@page import="src.models.materiel.Ordinateur"%>
+<%@page import="src.models.materiel.Marque"%>
+<%@page import="src.models.clients.Client"%>
+
+<%
+
+    Reparation[] reparations = null;
+    if(request.getAttribute("reparations")!=null) {
+        reparations = (Reparation[]) request.getAttribute("reparations");
+    }
+%>
+
+<%@ include file="../templates/header.html"%>
+
+<!--main-->
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Section recherche</h1>
+        <nav>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="accueil.html">Accueil</a></li>
+            <li class="breadcrumb-item"> <a href="insertionClient.html">Reparation</a></li>
+            <li class="breadcrumb-item">En cours</li>
+          </ol>
+        </nav>
+      </div>
+
+      <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        
+                      <h5 class="card-title">Liste des réparations en cours</h5>
+        
+                      <!-- Table with stripped rows -->
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th scope="col">Identifiant</th>
+                            <th scope="col">Ordinateur</th>
+                            <th scope="col">Numéro de série</th>
+                            <th scope="col">Propriétaire</th>
+                            <th scope="col">Date de récéption</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                        <% if(reparations!=null) {
+
+                            for(int i=0;i<reparations.length;i++) {
+                                %>
+                                    <tr>
+                                        <td><%=reparations[i].getId()%></td>
+                                        <td><%=reparations[i].getOrdinateur().getMarque().getLibelle()%> <%=reparations[i].getOrdinateur().getModel()%></td>
+                                        <td><%=reparations[i].getOrdinateur().getNumeroSerie()%></td>
+                                        <td><%=reparations[i].getClient().getNom()%> <%=reparations[i].getClient().getPrenom()%></td>
+                                        <td><%=reparations[i].getDateReception()%></td>
+                                        <td><a href="${pageContext.request.contextPath}/reparation/retourner?idReparation=<%=reparations[i].getId()%>">Retourner</a></td>
+                                    </tr>
+                        <% } } %>
+                        </tbody>
+                        
+                      </table>
+                      <!-- End Table with stripped rows -->
+        
+                    </div>
+                  </div>
+            </div>
+        </div>
+      </section>
+
+  </main>
+<!--main-->
+
+<%@ include file="../templates/footer.html"%>
