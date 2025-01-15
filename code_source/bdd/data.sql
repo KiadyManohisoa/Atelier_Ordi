@@ -42,3 +42,17 @@ INSERT INTO PanneOrdi (idReparationOrdi, idTypeComposant, description) VALUES
 
 INSERT INTO ActionComposant (idReparationOrdi, idTypeComposant) VALUES 
 ('REP000002', 'TCMP000002');
+
+INSERT INTO MarqueComposant ("libelle") VALUES 
+('Intel'),
+('AMD'),
+('NVIDIA'),
+('Corsair'),
+('Kingston');
+
+INSERT INTO Composant (nommodele, description, idmarquecomposant, idtypecomposant) VALUES
+('Core i9-13900K', 'Processeur haut de gamme Intel', 'MCMP000001', 'TCMP000001'),
+('Ryzen 7 5800X', 'Processeur performant AMD', 'MCMP000002', 'TCMP000001'),
+('GeForce RTX 3080', 'Carte graphique NVIDIA', 'MCMP000003', 'TCMP000002'),
+('Vengeance LPX 16GB', 'RAM DDR4 Corsair, 3200MHz', 'MCMP000004', 'TCMP000003'),
+('KC3000 1TB', 'SSD rapide Kingston, NVMe', 'MCMP000005', 'TCMP000004');

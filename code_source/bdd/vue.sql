@@ -20,3 +20,15 @@ INNER JOIN v_Ordi o
     ON a.idReparationOrdi = o.idReparation 
 INNER JOIN TypeComposant t 
     ON a.idTypeComposant=t.id;
+
+CREATE OR REPLACE VIEW v_Composant 
+    AS SELECT c.*, m.libelle as marqueComposant, t.libelle as typeComposant FROM Composant c 
+INNER JOIN MarqueComposant m 
+    ON c.idMarqueComposant=m.id 
+INNER JOIN TypeComposant t 
+    ON c.idTypeComposant=t.id;
+
+CREATE OR REPLACE VIEW v_ComposantsDuMois 
+    AS SELECT c.*, cdm.id idCdm, cdm.periode FROM ComposantsDuMois cdm 
+INNER JOIN v_Composant c 
+    ON cdm.idComposant=c.id;
