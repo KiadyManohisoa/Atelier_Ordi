@@ -31,6 +31,43 @@ CREATE TABLE Categorie(
    UNIQUE(libelle)
 );
 
+CREATE TABLE MarqueComposant(
+   id VARCHAR(16)  DEFAULT ('MCMP') || LPAD(nextval('s_MarqueComposant')::TEXT, 6, '0'),
+   libelle VARCHAR(40)  NOT NULL,
+   PRIMARY KEY(id),
+   UNIQUE(libelle)
+);
+
+CREATE TABLE Composant(
+   id VARCHAR(15)  DEFAULT ('CMP') || LPAD(nextval('s_Composant')::TEXT, 6, '0'),
+   nomModele VARCHAR(50)  NOT NULL,
+   description TEXT,
+   idMarqueComposant VARCHAR(16)  NOT NULL,
+   idTypeComposant VARCHAR(15)  NOT NULL,
+   PRIMARY KEY(id),
+   UNIQUE(nomModele),
+   FOREIGN KEY(idMarqueComposant) REFERENCES MarqueComposant(id),
+   FOREIGN KEY(idTypeComposant) REFERENCES TypeComposant(id)
+);
+
+CREATE TABLE SortieComposant(
+   id VARCHAR(15)  DEFAULT ('SCMP') || LPAD(nextval('s_SortieComposant')::TEXT, 6, '0'),
+   dateSortie DATE DEFAULT CURRENT_DATE,
+   quantite INTEGER NOT NULL CHECK (quantite > 0),
+   prixUnitaire NUMERIC(14,2)   NOT NULL CHECK (prixUnitaire > 0),
+   idComposant VARCHAR(15)  NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(idComposant) REFERENCES Composant(id)
+);
+
+CREATE TABLE ComposantsDuMois(
+   id VARCHAR(16)  DEFAULT ('CMPM') || LPAD(nextval('s_ComposantsDuMois')::TEXT, 6, '0'),
+   periode CHAR(7) NOT NULL,
+   idComposant VARCHAR(15)  NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(idComposant) REFERENCES Composant(id)
+);
+
 CREATE TABLE ReparationOrdi(
    id VARCHAR(15)  DEFAULT ('REP') || LPAD(nextval('s_ReparationOrdi')::TEXT, 6, '0'),
    nomModele VARCHAR(100)  NOT NULL,
@@ -87,6 +124,17 @@ CREATE TABLE Facture(
    PRIMARY KEY(id),
    UNIQUE(id_reparationOrdi),
    FOREIGN KEY(id_reparationOrdi) REFERENCES ReparationOrdi(id)
+);
+
+CREATE TABLE EntreeComposant(
+   id VARCHAR(15)  DEFAULT ('ECMP') || LPAD(nextval('s_EntreeComposant')::TEXT, 6, '0'),
+   dateEntree DATE DEFAULT CURRENT_DATE,
+   quantite INTEGER NOT NULL CHECK (quantite > 0),
+   prixUnitaire NUMERIC(14,2)   NOT NULL CHECK (prixUnitaire > 0),
+   d_reste SMALLINT NOT NULL CHECK (d_reste >=0),
+   idComposant VARCHAR(15)  NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(idComposant) REFERENCES Composant(id)
 );
 
 CREATE TABLE PanneOrdi(
