@@ -39,6 +39,48 @@ public class Recommandations {
         this.setComposantDuMois(cdm);
     }
 
+    public List<ComposantDuMois> getComposantDeLannee(Connection co,String annee) throws Exception{
+        List<ComposantDuMois> composants=new ArrayList<>();
+        PreparedStatement st = null;
+        ResultSet res = null;
+        String query = "select * from v_ComposantsDuMois where periode LIKE ? order by periode";
+        try {
+            st = co.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            st.setString(1,String.valueOf(annee)+"-%" );
+            res = st.executeQuery();
+
+            while (res.next()) {
+                ComposantDuMois composantsMensuel=new ComposantDuMois();
+                composantsMensuel.setId(res.getString("id"));
+                composantsMensuel.setNomModele(res.getString("nomModele"));
+                composantsMensuel.setDescription(res.getString("description"));
+                
+                TypeComposant t = new TypeComposant();
+                t.setLibelle(res.getString("typecomposant"));
+                composantsMensuel.setTypeComposant(t);
+
+
+                MarqueComposant m = new MarqueComposant();
+                m.setLibelle(res.getString("marquecomposant"));
+                composantsMensuel.setMarqueComposant(m);
+
+                composantsMensuel.setPeriode(res.getString("periode"));
+                composants.add(composantsMensuel);
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (res != null) {
+                res.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+        }
+        return composants;
+    }
+
     public List<ComposantDuMois> getComposantDuMois(Connection co,String periode) throws Exception{
         List<ComposantDuMois> composants=new ArrayList<>();
         PreparedStatement st = null;
