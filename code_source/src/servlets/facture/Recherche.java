@@ -27,12 +27,14 @@ public class Recherche extends HttpServlet {
             request.setAttribute("cats", cats);
         } catch (Exception e) {
             message = e.getMessage();
+            e.printStackTrace();
         } finally {
             if (co != null) {
                 try {
                     co.close();
                 } catch (Exception e) {
                     message = e.getMessage();
+                    e.printStackTrace();
                 }
             }
         }

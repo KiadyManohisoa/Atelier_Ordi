@@ -7,9 +7,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import src.models.clients.Client;
-import src.models.materiel.Marque;
+import src.models.materiel.MarqueOrdi;
 import src.models.materiel.Ordinateur;
 import src.models.materiel.Panne;
+import src.models.util.Utilitaire;
 
 public class Reparation {
 
@@ -31,12 +32,58 @@ public class Reparation {
         this.setPannes(idTypeComposantsEnPannes, descriptionsPannes);
         this.setListeActionComposant(idComposantsAremplacer);
     }
+    
+    public Reparation[] getReparationsParDate(Connection co, String date) throws Exception {
+        Reparation[] reparationO;
+        PreparedStatement st = null;
+        ResultSet res = null;
+        String query = "select * from v_Ordi where dateReception=(?)";
+        try {
+            st = co.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            st.setDate(1, Utilitaire.formatToDate(date));
+            res = st.executeQuery();
 
-    public Reparation[] getByCriteria(Connection co, String idCategorie,String idTypeComposant) throws Exception {
+            res.last();
+            int rowCount = res.getRow();
+            res.beforeFirst();
+
+            reparationO = new Reparation[rowCount];
+            int i = 0;
+            while (res.next()) {
+                reparationO[i] = new Reparation();
+                reparationO[i].setId(res.getString("idreparation"));
+                reparationO[i].setDateReception(res.getDate("datereception"));
+                reparationO[i].setAvancement(res.getInt("avancement"));
+                Ordinateur ordi = new Ordinateur();
+                ordi.setMarque(new MarqueOrdi(res.getString("marque"))); 
+                ordi.setModel(res.getString("nomModele")); 
+                ordi.setNumeroSerie(res.getString("numeroSerie")); 
+                reparationO[i].setOrdinateur(ordi);
+                Client clt = new Client();
+                clt.setId(res.getString("idClient"));
+                clt.setNom(res.getString("nom"));
+                clt.setPrenom(res.getString("prenom"));
+                reparationO[i].setClient(clt);
+                i++;
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (res != null) {
+                res.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+        }
+        return reparationO;
+    }
+
+    public Reparation[] getByCriteria(Connection co, String idCategorie, String idTypeComposant) throws Exception {
         Reparation[] reparations;
         PreparedStatement st = null;
         ResultSet res = null;
-        String query = "select * from v_actionOrdi where idTypeComposant=(?) AND idCategorie=(?)";
+        String query = "select * from v_actionOrdi where idTypeComposant=(?) AND idCategorie=(?) and avancement=1";
         try {
             st = co.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             st.setString(1, idTypeComposant);
@@ -54,7 +101,7 @@ public class Reparation {
                 reparations[i].setId(res.getString("idreparation"));
                 reparations[i].setDateReception(res.getDate("datereception"));
                 Ordinateur ordinateur = new Ordinateur();
-                ordinateur.setMarque(new Marque(res.getString("marque"))); 
+                ordinateur.setMarque(new MarqueOrdi(res.getString("marque"))); 
                 ordinateur.setModel(res.getString("nomModele")); 
                 ordinateur.setNumeroSerie(res.getString("numeroSerie")); 
                 reparations[i].setOrdinateur(ordinateur);
@@ -76,20 +123,32 @@ public class Reparation {
         }
         return reparations;
     }
+
+    
     
     public void mettreAjour(Connection co) throws Exception {
         PreparedStatement st = null;
         String query="update ReparationOrdi set avancement=(?) where id=(?)";
         try {
+            co.setAutoCommit(false);
+
             st = co.prepareStatement(query);
-           
-            st.setInt(1, this.getAvancement() + 1);
+           st.setInt(1, this.getAvancement());
             st.setString(2, this.getId());
            
             st.executeUpdate();
+            co.commit();
+        } catch(Exception e) {
+            if(co!=null) {
+                co.rollback();
+            }
+            throw e;
         } finally {
             if (st != null) {
                 st.close();
+            }
+            if(co!=null) {
+                co.setAutoCommit(true);
             }
         }
     }
@@ -110,7 +169,7 @@ public class Reparation {
                 reparation.setDateReception(res.getDate("datereception"));
                 reparation.setAvancement(res.getInt("avancement"));
                 Ordinateur ordi = new Ordinateur();
-                ordi.setMarque(new Marque(res.getString("marque"))); 
+                ordi.setMarque(new MarqueOrdi(res.getString("marque"))); 
                 ordi.setModel(res.getString("nomModele")); 
                 ordi.setNumeroSerie(res.getString("numeroSerie")); 
                 reparation.setOrdinateur(ordi);
@@ -157,7 +216,7 @@ public class Reparation {
                 reparations[i].setId(res.getString("idreparation"));
                 reparations[i].setDateReception(res.getDate("datereception"));
                 Ordinateur ordinateur = new Ordinateur();
-                ordinateur.setMarque(new Marque(res.getString("marque"))); 
+                ordinateur.setMarque(new MarqueOrdi(res.getString("marque"))); 
                 ordinateur.setModel(res.getString("nomModele")); 
                 ordinateur.setNumeroSerie(res.getString("numeroSerie")); 
                 reparations[i].setOrdinateur(ordinateur);
@@ -287,7 +346,7 @@ public class Reparation {
                 reparations[i].setId(res.getString("idreparation"));
                 reparations[i].setDateReception(res.getDate("datereception"));
                 Ordinateur ordinateur = new Ordinateur();
-                ordinateur.setMarque(new Marque(res.getString("marque"))); 
+                ordinateur.setMarque(new MarqueOrdi(res.getString("marque"))); 
                 ordinateur.setModel(res.getString("nomModele")); 
                 ordinateur.setNumeroSerie(res.getString("numeroSerie")); 
                 reparations[i].setOrdinateur(ordinateur);

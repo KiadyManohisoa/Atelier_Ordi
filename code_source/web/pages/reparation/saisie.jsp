@@ -1,5 +1,5 @@
 <%@page import="src.models.clients.Client"%>
-<%@page import="src.models.materiel.Marque"%>
+<%@page import="src.models.materiel.MarqueOrdi"%>
 <%@page import="src.models.materiel.TypeComposant"%>
 <%@page import="src.models.materiel.Categorie"%>
 
@@ -9,9 +9,9 @@
     clts = (Client[]) request.getAttribute("clts");
   }
 
-  Marque [] marques = null;
+  MarqueOrdi [] marques = null;
   if(request.getAttribute("marques")!=null) {
-    marques = (Marque[]) request.getAttribute("marques");
+    marques = (MarqueOrdi[]) request.getAttribute("marques");
   }
 
   TypeComposant [] tps = null;

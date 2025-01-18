@@ -16,17 +16,16 @@ public class ValidationRetour extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idReparation = request.getParameter("idReparation");
 
-        String url = new String("/web/pages/reparation/encours.jsp");
+        String url = new String("/reparation/encours");
         String message = new String();
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
             Reparation reparation = new Reparation().obtenirParId(co, idReparation);
+            reparation.setAvancement(reparation.getAvancement()+1);
             reparation.mettreAjour(co);
             message = "Réparation "+idReparation+" retournée avec succès";   
-
-            Reparation [] reparations = new Reparation().listerParAvancement(co, 0);
-            request.setAttribute("reparations", reparations);     
+    
         } catch (Exception e) {
             message = e.getMessage();
         } finally {
@@ -38,9 +37,11 @@ public class ValidationRetour extends HttpServlet {
                 }
             }
         }
-        request.setAttribute("message", message);
-        RequestDispatcher dispatcher = request.getRequestDispatcher(url);
-        dispatcher.forward(request, response);
+
+        response.sendRedirect(request.getContextPath()+url+"?message="+message);
+        // request.setAttribute("message", message);
+        // RequestDispatcher dispatcher = request.getRequestDispatcher(url);
+        // dispatcher.forward(request, response);
     }
 
 }

@@ -3,13 +3,13 @@ package src.models.materiel;
 public class Ordinateur {
  
     String model;
-    Marque marque;
+    MarqueOrdi marque;
     String numeroSerie;
     int anneeSortie;
     Categorie categorie;
 
     public Ordinateur(String idMarque, String idCategorie, String nomModele, String numeroSerie, String anneeSortie) throws Exception {
-        Marque marque = new Marque();
+        MarqueOrdi marque = new MarqueOrdi();
         marque.setId(idMarque);
         this.setMarque(marque);
         this.setCategorie(new Categorie(idCategorie));
@@ -39,11 +39,11 @@ public class Ordinateur {
         this.model = model;
     }
     
-    public Marque getMarque() {
+    public MarqueOrdi getMarque() {
         return marque;
     }
 
-    public void setMarque(Marque marque) {
+    public void setMarque(MarqueOrdi marque) {
         this.marque = marque;
     }
     

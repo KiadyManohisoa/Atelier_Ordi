@@ -9,11 +9,12 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import src.models.clients.Client;
 import src.models.materiel.Categorie;
-import src.models.materiel.Marque;
+import src.models.materiel.MarqueOrdi;
 import src.models.materiel.Ordinateur;
 import src.models.materiel.TypeComposant;
 import src.models.processus.Recommandations;
 import src.models.processus.Reparation;
+import src.models.util.Periode;
 import src.models.materiel.ComposantDuMois;
 import src.services.UtilDB;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,7 +37,7 @@ public class RechercheRecommandes extends HttpServlet  {
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
-            List<ComposantDuMois> cdm = new Recommandations().getComposantDuMois(co, periode);
+            List<ComposantDuMois> cdm = new Recommandations().getComposantDuMois(co, new Periode(periode));
             request.setAttribute("cdm", cdm);
         } catch (Exception e) {
             message = e.getMessage();

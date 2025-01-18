@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW v_Ordi 
-    AS SELECT r.id as idReparation, m.libelle as marque, r.nomModele, r.numeroSerie, r.dateReception, r.avancement, r.idCategorie, c.nom, c.prenom 
+    AS SELECT r.id as idReparation, m.libelle as marque, r.nomModele, r.numeroSerie, r.dateReception, r.avancement, r.idCategorie, c.nom, c.prenom, c.id as idClient 
 FROM ReparationOrdi r 
     INNER JOIN MarqueOrdi m 
 ON r.idMarqueOrdinateur=m.id

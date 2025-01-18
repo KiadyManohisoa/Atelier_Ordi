@@ -38,22 +38,13 @@
                 <div class="card">
                     <div class="card-body">
                     
-                    <h5 class="card-title">Recherche multicritère</h5>
+                    <h5 class="card-title">Recherche par date (clients)</h5>
         
-                      <form class="row g-3" action="${pageContext.request.contextPath}/reparation/recherche" method="post">
+                      <form class="row g-3" action="${pageContext.request.contextPath}/reparation/recherche/client" method="post">
                         <div class="col-md-12">
                             <div class="form-floating mb-3">
-                                <select name="idTypeComposant" class="form-select" id="floatingSelect" aria-label="Types de composants">
-                                    <option value="">Choisissez un type de composant</option>
-                                    <%
-                                        if(tps!=null) {
-                                            for(int i=0;i<tps.length;i++) { %>
-                                                <option value="<%=tps[i].getId()%>"> <%=tps[i].getLibelle()%></option>
-                                            <% }
-                                        }
-                                    %>
-                                </select>
-                            <label for="floatingSelect">Composant en panne</label>
+                            <input name="dateRecherche" type="date" class="form-control" id="date" placeholder="date">
+                            <label for="floatingSelect">Date de recherche</label>
                         </div>
                         </div>
 
@@ -69,10 +60,10 @@
                       <table class="table table-striped">
                         <thead>
                           <tr>
-                            <th scope="col">Identifiant</th>
+                            <th scope="col">Id client</th>
+                            <th scope="col">Id reparation</th>
+                            <th scope="col">Client</th>
                             <th scope="col">Ordinateur</th>
-                            <th scope="col">Numéro de série</th>
-                            <th scope="col">Propriétaire</th>
                             <th scope="col">Date de récéption</th>
                           </tr>
                         </thead>
@@ -83,10 +74,10 @@
                             for(int i=0;i<reparations.length;i++) {
                                 %>
                                     <tr>
+                                        <td><%=reparations[i].getClient().getId()%></td>
                                         <td><%=reparations[i].getId()%></td>
-                                        <td><%=reparations[i].getOrdinateur().getMarque().getLibelle()%> <%=reparations[i].getOrdinateur().getModel()%></td>
-                                        <td><%=reparations[i].getOrdinateur().getNumeroSerie()%></td>
                                         <td><%=reparations[i].getClient().getNom()%> <%=reparations[i].getClient().getPrenom()%></td>
+                                        <td><%=reparations[i].getOrdinateur().getMarque().getLibelle()%> <%=reparations[i].getOrdinateur().getModel()%></td>
                                         <td><%=reparations[i].getDateReception()%></td>
                                     </tr>
                         <% } } %>

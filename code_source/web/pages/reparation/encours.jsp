@@ -1,6 +1,6 @@
 <%@page import="src.models.processus.Reparation"%>
 <%@page import="src.models.materiel.Ordinateur"%>
-<%@page import="src.models.materiel.Marque"%>
+<%@page import="src.models.materiel.MarqueOrdi"%>
 <%@page import="src.models.clients.Client"%>
 
 <%

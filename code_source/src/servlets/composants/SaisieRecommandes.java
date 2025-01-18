@@ -9,7 +9,7 @@ import jakarta.servlet.http.*;
 import src.models.clients.Client;
 import src.models.materiel.Categorie;
 import src.models.materiel.Composant;
-import src.models.materiel.Marque;
+import src.models.materiel.MarqueOrdi;
 import src.models.materiel.Ordinateur;
 import src.models.materiel.TypeComposant;
 import src.models.processus.Recommandations;

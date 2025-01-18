@@ -4,7 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import src.models.clients.Client;
 import src.models.materiel.Categorie;
-import src.models.materiel.Marque;
+import src.models.materiel.MarqueOrdi;
 import src.models.materiel.Ordinateur;
 import src.models.materiel.TypeComposant;
 import src.services.UtilDB;
@@ -25,7 +25,7 @@ public class Saisi extends HttpServlet {
         try {
             co = new UtilDB().getConnection();
             Client[] clts = new Client().lister(co);
-            Marque[] marques = new Marque().lister(co);
+            MarqueOrdi[] marques = new MarqueOrdi().lister(co);
             TypeComposant[] tps = new TypeComposant().lister(co);
             Categorie[] cats = new Categorie().lister(co);
             request.setAttribute("clts", clts);
@@ -74,7 +74,7 @@ public class Saisi extends HttpServlet {
             reparation.enregistrer(co);
 
             Client[] clts = new Client().lister(co);
-            Marque[] marques = new Marque().lister(co);
+            MarqueOrdi[] marques = new MarqueOrdi().lister(co);
             TypeComposant[] tps = new TypeComposant().lister(co);
             Categorie[] cats = new Categorie().lister(co);
             request.setAttribute("clts", clts);

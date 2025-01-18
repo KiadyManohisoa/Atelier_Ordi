@@ -9,7 +9,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import src.models.clients.Client;
 import src.models.materiel.Categorie;
-import src.models.materiel.Marque;
+import src.models.materiel.MarqueOrdi;
 import src.models.materiel.Ordinateur;
 import src.models.materiel.TypeComposant;
 import src.models.processus.Recommandations;
@@ -17,6 +17,7 @@ import src.models.processus.Reparation;
 import src.models.materiel.ComposantDuMois;
 import src.services.UtilDB;
 import jakarta.servlet.annotation.WebServlet;
+import src.models.util.Utilitaire;
 
 @WebServlet("/composants/recommandes/recherche2")
 public class RechercheRecommandesAnnuel extends HttpServlet  {
@@ -38,6 +39,7 @@ public class RechercheRecommandesAnnuel extends HttpServlet  {
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
+            Utilitaire.verifierSiEntier(annee);
             List<ComposantDuMois> cdm = new Recommandations().getComposantDeLannee(co, annee);
             request.setAttribute("cdm", cdm);
         } catch (Exception e) {

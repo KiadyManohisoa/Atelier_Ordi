@@ -8,6 +8,7 @@ import java.util.List;
 import src.models.materiel.ComposantDuMois;
 import src.models.materiel.MarqueComposant;
 import src.models.materiel.TypeComposant;
+import src.models.util.Periode;
 
 public class Recommandations {
     
@@ -25,11 +26,11 @@ public class Recommandations {
 
     }
 
-    public Recommandations(String [] idComposantsDuMois, String periode) {
+    public Recommandations(String [] idComposantsDuMois, String periode) throws Exception {
         this.setComposantDuMois(idComposantsDuMois, periode);
     }
 
-    public void setComposantDuMois(String [] idComposantsDuMois, String periode) {
+    public void setComposantDuMois(String [] idComposantsDuMois, String periode) throws Exception {
         List<ComposantDuMois> cdm = new ArrayList<>();
         if(idComposantsDuMois.length>0) {
             for (int i = 0; i < idComposantsDuMois.length; i++) {
@@ -46,7 +47,7 @@ public class Recommandations {
         String query = "select * from v_ComposantsDuMois where periode LIKE ? order by periode";
         try {
             st = co.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            st.setString(1,String.valueOf(annee)+"-%" );
+            st.setString(1,annee+"-%" );
             res = st.executeQuery();
 
             while (res.next()) {
@@ -64,7 +65,7 @@ public class Recommandations {
                 m.setLibelle(res.getString("marquecomposant"));
                 composantsMensuel.setMarqueComposant(m);
 
-                composantsMensuel.setPeriode(res.getString("periode"));
+                composantsMensuel.setPeriode(new Periode(res.getString("periode")));
                 composants.add(composantsMensuel);
             }
 
@@ -81,14 +82,14 @@ public class Recommandations {
         return composants;
     }
 
-    public List<ComposantDuMois> getComposantDuMois(Connection co,String periode) throws Exception{
+    public List<ComposantDuMois> getComposantDuMois(Connection co, Periode periode) throws Exception{
         List<ComposantDuMois> composants=new ArrayList<>();
         PreparedStatement st = null;
         ResultSet res = null;
         String query = "select * from v_ComposantsDuMois where periode=(?)";
         try {
             st = co.prepareStatement(query);
-            st.setString(1, periode);
+            st.setString(1, periode.getValeur());
             res = st.executeQuery();
 
             while (res.next()) {

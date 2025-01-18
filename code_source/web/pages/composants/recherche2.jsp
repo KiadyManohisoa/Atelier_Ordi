@@ -1,6 +1,7 @@
 <%@page import="src.models.processus.Recommandations"%>
 <%@page import="src.models.materiel.Composant"%>
 <%@page import="src.models.materiel.ComposantDuMois"%>
+<%@page import="src.models.util.Periode"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 
@@ -41,7 +42,7 @@
                         <div class="col-md-12">
                           <div class="form-floating">
                             <input name="annee" type="number" class="form-control" id="nom" placeholder="Nom">
-                            <label for="floatingName">Periode</label>
+                            <label for="floatingName">Année</label>
                           </div>
                         </div>
 
@@ -74,7 +75,7 @@
                                 <td><%=composants.get(i).getTypeComposant().getLibelle()%></td>
                                 <td><%=composants.get(i).getMarqueComposant().getLibelle()%></td>
                                 <td><%=composants.get(i).getDescription()%></td>
-                                <td><%=composants.get(i).getPeriode()%></td>
+                                <td><%=composants.get(i).getPeriode().getValeur()%></td>
                             </tr>
                         <% } } %>
 

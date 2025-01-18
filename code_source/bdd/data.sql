@@ -30,6 +30,19 @@ INSERT INTO ReparationOrdi (nomModele, numeroSerie, anneeSortie, dateReception, 
 ('MacBook Pro', 'SN456789', 2018, '2025-01-04', 'CLT000004', 'MRK000004', 'CAT000001'),
 ('VivoBook S15', 'SN567890', 2022, '2025-01-05', 'CLT000005', 'MRK000005', 'CAT000002');
 
+INSERT INTO ReparationOrdi (nommodele, numeroserie, anneesortie, datereception, avancement, idcategorie, idclient, idmarqueordinateur)
+VALUES 
+('Pavilion 15', 'SN12345HP001', 2022, '2025-01-15', 0, 'CAT000001', 'CLT000001', 'MRK000001'),
+('XPS 13', 'SN67890DL001', 2021, '2025-01-15', 1, 'CAT000002', 'CLT000002', 'MRK000002'),
+('ThinkPad X2', 'SN11223LN001', 2020, '2025-01-15', 2, 'CAT000001', 'CLT000003', 'MRK000003');
+
+INSERT INTO ReparationOrdi (nommodele, numeroserie, anneesortie, datereception, avancement, idcategorie, idclient, idmarqueordinateur)
+VALUES 
+('MacBook Air', 'SN44556AP001', 2023, '2025-01-16', 0, 'CAT000001', 'CLT000004', 'MRK000004'),
+('ROG Zephyrus', 'SN77889AS001', 2022, '2025-01-16', 1, 'CAT000002', 'CLT000005', 'MRK000005'),
+('Envy x360', 'SN99001HP002', 2021, '2025-01-16', 2, 'CAT000001', 'CLT000001', 'MRK000001');
+
+
 INSERT INTO PanneOrdi (idReparationOrdi, idTypeComposant, description) VALUES
 ('REP000001', 'TCMP000001', 'Processeur surchauffe'),
 ('REP000001', 'TCMP000004', 'Disque dur defaillant'),

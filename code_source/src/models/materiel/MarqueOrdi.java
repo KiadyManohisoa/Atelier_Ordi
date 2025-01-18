@@ -4,20 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class Marque {
+public class MarqueOrdi {
 
     String id;
     String libelle;
 
-    public Marque() {
+    public MarqueOrdi() {
     }
 
-    public Marque(String libelle) {
+    public MarqueOrdi(String libelle) {
         this.setLibelle(libelle);
     }
 
-    public Marque[] lister(Connection co) throws Exception {
-        Marque [] marques;
+    public MarqueOrdi[] lister(Connection co) throws Exception {
+        MarqueOrdi [] marques;
         PreparedStatement st = null;
         ResultSet res = null;
         String query = "select * from MarqueOrdi";
@@ -29,10 +29,10 @@ public class Marque {
             int rowCount = res.getRow();
             res.beforeFirst();
 
-            marques = new Marque[rowCount];
+            marques = new MarqueOrdi[rowCount];
             int i = 0;
             while (res.next()) {
-                marques[i] = new Marque();
+                marques[i] = new MarqueOrdi();
                 marques[i].setId(res.getString("id"));
                 marques[i].setLibelle(res.getString("libelle"));
                 i++;

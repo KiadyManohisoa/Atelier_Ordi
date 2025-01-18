@@ -2,24 +2,17 @@ package src.models.materiel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import src.models.util.Periode;
 
 public class ComposantDuMois extends Composant{
 
-    String periode;
+    Periode periode;
 
-    public ComposantDuMois(String id, String periode) {
+    public ComposantDuMois(String id, String periode) throws Exception {
         super(id);
-        this.setPeriode(periode);
+        this.setPeriode(new Periode(periode));
     }
-
-    public String getPeriode() {
-        return periode;
-    }
-
-    public void setPeriode(String periode) {
-        this.periode = periode;
-    }
-
+    
     public ComposantDuMois(){
         
     }
@@ -29,13 +22,21 @@ public class ComposantDuMois extends Composant{
         try {
             st = co.prepareStatement(query);
             st.setString(1, this.getId());
-            st.setString(2, this.getPeriode());
+            st.setString(2, this.getPeriode().getValeur());
             st.executeUpdate();
         } finally {
             if (st != null) {
                 st.close();
             }
         }
+    }
+
+    public Periode getPeriode() {
+        return periode;
+    }
+
+    public void setPeriode(Periode periode) {
+        this.periode = periode;
     }
 
 }
