@@ -131,7 +131,7 @@ CREATE TABLE EntreeComposant(
    dateEntree DATE DEFAULT CURRENT_DATE,
    quantite INTEGER NOT NULL CHECK (quantite > 0),
    prixUnitaire NUMERIC(14,2)   NOT NULL CHECK (prixUnitaire > 0),
-   d_reste SMALLINT NOT NULL CHECK (d_reste >=0),
+   d_reste INTEGER NOT NULL CHECK (d_reste >=0),
    idComposant VARCHAR(15)  NOT NULL,
    PRIMARY KEY(id),
    FOREIGN KEY(idComposant) REFERENCES Composant(id)

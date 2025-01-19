@@ -1,5 +1,5 @@
-CREATE DATABASE atelierordi;
+CREATE DATABASE ardo;
 
-ALTER DATABASE atelierordi OWNER TO postgres;
+ALTER DATABASE ardo OWNER TO postgres;
 
-\c atelierordi postgres;
+\c ardo postgres;

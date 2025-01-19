@@ -133,7 +133,7 @@ public class Reparation {
             co.setAutoCommit(false);
 
             st = co.prepareStatement(query);
-           st.setInt(1, this.getAvancement());
+            st.setInt(1, this.getAvancement());
             st.setString(2, this.getId());
            
             st.executeUpdate();
