@@ -40,18 +40,34 @@
                           </div>
                         </div>
 
+                        <div class="col-md-12">
+                        <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Identifiant</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Marque</th>
+                            <th scope="col">Modèle</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
                         <% if(composants!=null) { 
                             for(int i=0;i<composants.length;i++) { %>
-
-                            <div class="col-md-12">
-                                <div class="form-check">
-                                    <input name="composantsRemplaces[]" value="<%=composants[i].getId()%>" class="form-check-input" type="checkbox" id="cpuCheck">
-                                    <label class="form-check-label" for="cpuCheck"> <%=composants[i].getNomModele()%> </label>
-                                </div>
-                            </div>
-
+                            <tr>
+                              <td> <input name="composantsRemplaces[]" value="<%=composants[i].getId()%>" class="form-check-input" type="checkbox" id="cpuCheck"> </td>
+                              <td> <%=composants[i].getId()%> </td>
+                              <td> <%=composants[i].getTypeComposant().getLibelle()%> </td>
+                              <td> <%=composants[i].getMarqueComposant().getLibelle()%> </td>
+                              <td> <%=composants[i].getNomModele()%> </td>
+                            </tr>
 
                         <% } } %>
+                      </tbody>
+                        
+                    </table>
+                    </div>
 
                         <div class="text-center">
                           <button type="submit" class="btn btn-primary">Valider</button>

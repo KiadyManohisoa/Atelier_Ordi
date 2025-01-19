@@ -21,12 +21,19 @@ INNER JOIN v_Ordi o
 INNER JOIN TypeComposant t 
     ON a.idTypeComposant=t.id;
 
+CREATE OR REPLACE VIEW v_stockComposant 
+    AS SELECT idComposant, sum(d_reste) as stockComposant 
+FROM entreeComposant 
+    GROUP BY idComposant;
+
 CREATE OR REPLACE VIEW v_Composant 
-    AS SELECT c.*, m.libelle as marqueComposant, t.libelle as typeComposant FROM Composant c 
+    AS SELECT c.*, m.libelle as marqueComposant, t.libelle as typeComposant, COALESCE(s.stockComposant,0) as stockComposant FROM Composant c 
 INNER JOIN MarqueComposant m 
     ON c.idMarqueComposant=m.id 
 INNER JOIN TypeComposant t 
-    ON c.idTypeComposant=t.id;
+    ON c.idTypeComposant=t.id
+LEFT JOIN v_stockComposant s 
+    ON c.id=s.idComposant;
 
 CREATE OR REPLACE VIEW v_ComposantsDuMois 
     AS SELECT c.*, cdm.id idCdm, cdm.periode FROM ComposantsDuMois cdm 
