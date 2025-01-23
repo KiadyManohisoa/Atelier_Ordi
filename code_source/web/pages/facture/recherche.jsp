@@ -107,6 +107,7 @@
                                         <td><%=reparations[i].getOrdinateur().getNumeroSerie()%></td>
                                         <td><%=reparations[i].getClient().getNom()%> <%=reparations[i].getClient().getPrenom()%></td>
                                         <td><%=reparations[i].getDateReception()%></td>
+                                          
                                     </tr>
                         <% } } %> 
                         </tbody>

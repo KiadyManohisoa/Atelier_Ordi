@@ -1,10 +1,17 @@
 CREATE OR REPLACE VIEW v_Ordi 
-    AS SELECT r.id as idReparation, m.libelle as marque, r.nomModele, r.numeroSerie, r.dateReception, r.avancement, r.idCategorie, c.nom, c.prenom, c.id as idClient 
+    AS SELECT r.id as idReparation, m.libelle as marque, r.nomModele, r.numeroSerie, r.dateReception, r.idCategorie, c.nom, c.prenom, c.id as idClient 
 FROM ReparationOrdi r 
     INNER JOIN MarqueOrdi m 
 ON r.idMarqueOrdinateur=m.id
     INNER JOIN Client c 
 ON r.idClient=c.id;
+
+CREATE OR REPLACE VIEW v_OrdiEnCours 
+    AS SELECT o.*
+FROM v_Ordi o 
+    LEFT JOIN Facture f 
+ON o.idReparation=f.id_reparationOrdi
+    WHERE f.id_reparationOrdi IS NULL;
 
 CREATE OR REPLACE VIEW v_panneOrdi 
     AS SELECT o.*, t.id as idTypeComposant, t.libelle, p.description
@@ -19,7 +26,14 @@ CREATE OR REPLACE VIEW v_actionOrdi
 INNER JOIN v_Ordi o 
     ON a.idReparationOrdi = o.idReparation 
 INNER JOIN TypeComposant t 
-    ON a.idTypeComposant=t.id;
+    ON a.idTypeComposant=t.id; 
+
+CREATE OR REPLACE VIEW v_actionOrdiFactures 
+    AS SELECT a.* 
+FROM Facture f 
+    INNER JOIN v_actionOrdi a 
+ON f.id_reparationOrdi=a.idReparation;
+
 
 CREATE OR REPLACE VIEW v_stockComposant 
     AS SELECT idComposant, sum(d_reste) as stockComposant 
@@ -39,3 +53,16 @@ CREATE OR REPLACE VIEW v_ComposantsDuMois
     AS SELECT c.*, cdm.id idCdm, cdm.periode FROM ComposantsDuMois cdm 
 INNER JOIN v_Composant c 
     ON cdm.idComposant=c.id;
+
+CREATE OR REPLACE VIEW v_factureReparation 
+    AS SELECT f.id as idFacture, r.id as idReparation, f.d_periodeFacturation, f.d_commissionTech, r.idTechnicien
+FROM Facture f 
+    INNER JOIN ReparationOrdi r 
+ON f.id_reparationOrdi = r.id;
+
+CREATE OR REPLACE VIEW v_commissionTechnicien 
+    AS SELECT t.id, t.nom, t.prenom, f.d_periodeFacturation, sum(f.d_commissionTech) as commission
+FROM v_factureReparation f 
+    INNER JOIN Technicien t
+ON f.idTechnicien=t.id
+    GROUP BY t.id, f.d_periodeFacturation;

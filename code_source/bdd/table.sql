@@ -62,10 +62,17 @@ CREATE TABLE SortieComposant(
 
 CREATE TABLE ComposantsDuMois(
    id VARCHAR(16)  DEFAULT ('CMPM') || LPAD(nextval('s_ComposantsDuMois')::TEXT, 6, '0'),
-   periode CHAR(7) NOT NULL,
+   periode CHAR(7)  NOT NULL,
    idComposant VARCHAR(15)  NOT NULL,
    PRIMARY KEY(id),
    FOREIGN KEY(idComposant) REFERENCES Composant(id)
+);
+
+CREATE TABLE Technicien(
+   id VARCHAR(16)  DEFAULT ('TC') || LPAD(nextval('s_Technicien')::TEXT, 6, '0'),
+   nom VARCHAR(100)  NOT NULL,
+   prenom VARCHAR(50) ,
+   PRIMARY KEY(id)
 );
 
 CREATE TABLE ReparationOrdi(
@@ -74,32 +81,15 @@ CREATE TABLE ReparationOrdi(
    numeroSerie VARCHAR(20)  NOT NULL,
    anneeSortie INTEGER CHECK (anneeSortie >0),
    dateReception DATE NOT NULL DEFAULT CURRENT_DATE,
-   avancement SMALLINT DEFAULT 0,
+   idTechnicien VARCHAR(16)  NOT NULL,
    idCategorie VARCHAR(15)  NOT NULL,
    idClient VARCHAR(15)  NOT NULL,
    idMarqueOrdinateur VARCHAR(15)  NOT NULL,
    PRIMARY KEY(id),
+   FOREIGN KEY(idTechnicien) REFERENCES Technicien(id),
    FOREIGN KEY(idCategorie) REFERENCES Categorie(id),
    FOREIGN KEY(idClient) REFERENCES Client(id),
    FOREIGN KEY(idMarqueOrdinateur) REFERENCES MarqueOrdi(id)
-);
-
-CREATE TABLE Diagnostic(
-   id VARCHAR(15)  DEFAULT ('DGSTC') || LPAD(nextval('s_Diagnostic')::TEXT, 6, '0'),
-   dateDiagnostic DATE NOT NULL DEFAULT CURRENT_DATE,
-   id_reparationOrdi VARCHAR(15)  NOT NULL,
-   PRIMARY KEY(id),
-   UNIQUE(id_reparationOrdi),
-   FOREIGN KEY(id_reparationOrdi) REFERENCES ReparationOrdi(id)
-);
-
-CREATE TABLE DetailDiagnostic(
-   id VARCHAR(15)  DEFAULT ('DTLD') || LPAD(nextval('s_DetailDiagnostic')::TEXT, 6, '0'),
-   description VARCHAR(100)  NOT NULL,
-   type CHAR(1)  NOT NULL,
-   idDiagnostic VARCHAR(15)  NOT NULL,
-   PRIMARY KEY(id),
-   FOREIGN KEY(idDiagnostic) REFERENCES Diagnostic(id)
 );
 
 CREATE TABLE Devis(
@@ -119,7 +109,9 @@ CREATE TABLE Devis(
 CREATE TABLE Facture(
    id VARCHAR(15)  DEFAULT ('FCT') || LPAD(nextval('s_Facture')::TEXT, 6, '0'),
    dateFacturation DATE NOT NULL DEFAULT CURRENT_DATE,
-   d_coutTotal NUMERIC(14,2)   CHECK (d_coutTotal>0),
+   d_periodeFacturation CHAR(7)  NOT NULL,
+   coutTotal NUMERIC(14,2)   CHECK (coutTotal>0),
+   d_commissionTech NUMERIC(14,2)   NOT NULL CHECK (d_commissionTech>0),
    id_reparationOrdi VARCHAR(15)  NOT NULL,
    PRIMARY KEY(id),
    UNIQUE(id_reparationOrdi),

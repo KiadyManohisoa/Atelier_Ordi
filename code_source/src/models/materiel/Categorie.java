@@ -35,7 +35,7 @@ public class Categorie {
         this.id = id;
     }
 
-        public Categorie[] lister(Connection co) throws Exception {
+    public Categorie[] lister(Connection co) throws Exception {
         Categorie[] categories;
         PreparedStatement st = null;
         ResultSet res = null;

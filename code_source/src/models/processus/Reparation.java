@@ -18,19 +18,32 @@ public class Reparation {
     Client client;
     Ordinateur ordinateur;
     Date dateReception;
-    int avancement;
     List<Panne> pannes;
     List<ActionComposant> listeActionComposant;
+    Technicien technicien;
+
+    public Reparation(String id) throws Exception {
+        this.setId(id);
+    }
+
+    public Technicien getTechnicien() {
+        return technicien;
+    }
+
+    public void setTechnicien(Technicien technicien) {
+        this.technicien = technicien;
+    }
 
     public Reparation() {
     }
 
-    public Reparation(Client client, Ordinateur ordinateur, String dateReception, String[] idTypeComposantsEnPannes, String [] descriptionsPannes, String [] idComposantsAremplacer) throws Exception {
+    public Reparation(Client client, Ordinateur ordinateur, String dateReception, String[] idTypeComposantsEnPannes, String [] descriptionsPannes, String [] idComposantsAremplacer, Technicien tech) throws Exception {
         this.setClient(client);
         this.setOrdinateur(ordinateur);
         this.setDateReception(dateReception);
         this.setPannes(idTypeComposantsEnPannes, descriptionsPannes);
         this.setListeActionComposant(idComposantsAremplacer);
+        this.setTechnicien(tech);
     }
     
     public Reparation[] getReparationsParDate(Connection co, String date) throws Exception {
@@ -53,7 +66,6 @@ public class Reparation {
                 reparationO[i] = new Reparation();
                 reparationO[i].setId(res.getString("idreparation"));
                 reparationO[i].setDateReception(res.getDate("datereception"));
-                reparationO[i].setAvancement(res.getInt("avancement"));
                 Ordinateur ordi = new Ordinateur();
                 ordi.setMarque(new MarqueOrdi(res.getString("marque"))); 
                 ordi.setModel(res.getString("nomModele")); 
@@ -83,7 +95,7 @@ public class Reparation {
         Reparation[] reparations;
         PreparedStatement st = null;
         ResultSet res = null;
-        String query = "select * from v_actionOrdi where idTypeComposant=(?) AND idCategorie=(?) and avancement=1";
+        String query = "select * from v_actionOrdiFactures where idTypeComposant=(?) AND idCategorie=(?)";
         try {
             st = co.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             st.setString(1, idTypeComposant);
@@ -127,30 +139,30 @@ public class Reparation {
     
     
     public void mettreAjour(Connection co) throws Exception {
-        PreparedStatement st = null;
-        String query="update ReparationOrdi set avancement=(?) where id=(?)";
-        try {
-            co.setAutoCommit(false);
+        // PreparedStatement st = null;
+        // String query="update ReparationOrdi set avancement=(?) where id=(?)";
+        // try {
+        //     co.setAutoCommit(false);
 
-            st = co.prepareStatement(query);
-            st.setInt(1, this.getAvancement());
-            st.setString(2, this.getId());
+        //     st = co.prepareStatement(query);
+        //     //st.setInt(1, this.getAvancement());
+        //     st.setString(2, this.getId());
            
-            st.executeUpdate();
-            co.commit();
-        } catch(Exception e) {
-            if(co!=null) {
-                co.rollback();
-            }
-            throw e;
-        } finally {
-            if (st != null) {
-                st.close();
-            }
-            if(co!=null) {
-                co.setAutoCommit(true);
-            }
-        }
+        //     st.executeUpdate();
+        //     co.commit();
+        // } catch(Exception e) {
+        //     if(co!=null) {
+        //         co.rollback();
+        //     }
+        //     throw e;
+        // } finally {
+        //     if (st != null) {
+        //         st.close();
+        //     }
+        //     if(co!=null) {
+        //         co.setAutoCommit(true);
+        //     }
+        // }
     }
 
     public Reparation obtenirParId(Connection conn, String idReparation) throws Exception {
@@ -167,7 +179,6 @@ public class Reparation {
                 reparation = new Reparation();
                 reparation.setId(res.getString("idreparation"));
                 reparation.setDateReception(res.getDate("datereception"));
-                reparation.setAvancement(res.getInt("avancement"));
                 Ordinateur ordi = new Ordinateur();
                 ordi.setMarque(new MarqueOrdi(res.getString("marque"))); 
                 ordi.setModel(res.getString("nomModele")); 
@@ -194,15 +205,14 @@ public class Reparation {
         }
         return reparation;
     }
-    
-    public Reparation[] listerParAvancement(Connection conn,int niveau) throws Exception {
+
+    public Reparation[] listerOrdinateursEnCours(Connection conn) throws Exception {
         Reparation[] reparations;
         PreparedStatement st = null;
         ResultSet res = null;
-        String query = "select * from v_ordi where avancement=(?)";
+        String query = "select * from v_OrdiEnCours";
         try {
             st = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            st.setInt(1,niveau);
             res = st.executeQuery();
 
             res.last();
@@ -240,7 +250,8 @@ public class Reparation {
         return reparations;
     }
 
-    void enregistrerActions(Connection co) throws Exception{
+    
+    void enregistrerActions(Connection co) throws Exception {
         if(!this.getListeActionComposant().isEmpty())
         {
             for (ActionComposant p : this.getListeActionComposant()) {
@@ -260,9 +271,9 @@ public class Reparation {
 
     void enregistrerReparation(Connection co) throws Exception {
         PreparedStatement st = null;
-        String query = "insert into ReparationOrdi (id, nomModele, numeroSerie, anneeSortie, dateReception, idMarqueOrdinateur, idClient, idCategorie) "
+        String query = "insert into ReparationOrdi (id, nomModele, numeroSerie, anneeSortie, dateReception, idMarqueOrdinateur, idClient, idCategorie, idTechnicien) "
                 +
-                "values (?, ?, ?, ?, ?, ?, ?, ?)";
+                "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             st = co.prepareStatement(query);
             st.setString(1, this.getId());
@@ -273,6 +284,7 @@ public class Reparation {
             st.setString(6, this.getOrdinateur().getMarque().getId());
             st.setString(7, this.getClient().getId());
             st.setString(8, this.getOrdinateur().getCategorie().getId());
+            st.setString(9, this.getTechnicien().getId());
             st.executeUpdate();
         } finally {
             if (st != null) {
@@ -402,6 +414,10 @@ public class Reparation {
         return dateReception;
     }
 
+    public void setDateReception(Date d) {
+        this.dateReception=d;
+    }
+
     public void setDateReception(String dateReception) throws Exception {
         try {
             Date daty = Date.valueOf(dateReception);
@@ -411,24 +427,14 @@ public class Reparation {
         }
     }
 
-
-    public int getAvancement() {
-        return avancement;
-    }
-
-    public void setAvancement(int avancement) {
-        this.avancement = avancement;
-    }
-
-    public void setDateReception(Date dateReception) {
-        this.dateReception = dateReception;
-    }
-
     public String getId() {
         return id;
     }
     
-    public void setId(String id) {
+    public void setId(String id) throws  Exception {
+        if(id==null || id.isEmpty()) {
+            throw new Exception("L\\'identifiant de la réparation ne peut pas être null ou vide");
+        }
         this.id = id;
     }
     

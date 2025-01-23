@@ -97,10 +97,10 @@
       </li><!-- End Components Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+        <a class="nav-link collapsed" data-bs-target="#clients-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-person"></i><span>Clients</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="clients-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
           <li>
             <a href="${pageContext.request.contextPath}/clients">
               <i class="bi bi-circle"></i><span>Nouveau client</span>
@@ -112,7 +112,21 @@
             </a>
           </li>
         </ul>
-      </li><!-- End Forms Nav -->
+    </li><!-- End Clients Nav -->
+    
+    <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#technicien-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-person-square"></i><span>Technicien</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="technicien-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="${pageContext.request.contextPath}/technicien/commissions">
+              <i class="bi bi-circle"></i><span>Commissions périodique</span>
+            </a>
+          </li>
+        </ul>
+    </li><!-- End Technicien Nav -->
+    
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">

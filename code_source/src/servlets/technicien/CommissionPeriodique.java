@@ -1,38 +1,37 @@
-package src.servlets.reparation;
+package src.servlets.technicien;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import src.models.clients.Client;
-import src.models.materiel.Ordinateur;
-import src.models.materiel.TypeComposant;
-import src.models.processus.Reparation;
-import src.services.UtilDB;
-import jakarta.servlet.annotation.WebServlet;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.List;
 
-@WebServlet("/reparation/recherche/client")
-public class RechercheClient  extends HttpServlet {
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import src.models.processus.CommissionTechnicien;
+import jakarta.servlet.annotation.WebServlet;
+import src.models.util.Periode;
+import src.services.UtilDB;
+
+@WebServlet("/technicien/commissions")
+public class CommissionPeriodique extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String url = new String("/web/pages/reparation/rechercheClient.jsp");
+        String url = "/web/pages/technicien/commission.jsp";
         RequestDispatcher dispatcher = request.getRequestDispatcher(url);
         dispatcher.forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String date = request.getParameter("dateRecherche");
-        String url = new String("/web/pages/reparation/rechercheClient.jsp");
+        String periode = request.getParameter("periode");
+        String url = new String("/web/pages/technicien/commission.jsp");
         String message = new String();
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
-            Reparation [] reparations = new Reparation().getReparationsParDate(co, date);
-            System.out.println("longueur des réponses :"+reparations.length);
-            request.setAttribute("reparations", reparations);
-
+            List<CommissionTechnicien> ct = new CommissionTechnicien().listerCommissionTechParPeriode(co, new Periode(periode));
+            request.setAttribute("ct", ct);
+            request.setAttribute("periode",periode);
         } catch (Exception e) {
             message = e.getMessage();
             e.printStackTrace();
@@ -48,7 +47,7 @@ public class RechercheClient  extends HttpServlet {
         }
         request.setAttribute("message", message);
         RequestDispatcher dispatcher = request.getRequestDispatcher(url);
-        dispatcher.forward(request, response);
+        dispatcher.forward(request, response);    
+    
     }
-
 }

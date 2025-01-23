@@ -74,6 +74,7 @@ public class StockComposant {
             throw new Exception("Format du prix unitaire invalide, avec valeur "+pu);
         }
     }
+    
     public void setPrixUnitaire(double prixUnitaire) {
         this.prixUnitaire = prixUnitaire;
     }  
