@@ -1,14 +1,9 @@
 <%@page import="src.models.processus.Reparation"%>
-<%@page import="src.models.materiel.TypeComposant"%>
 <%@page import="src.models.materiel.Ordinateur"%>
 <%@page import="src.models.materiel.MarqueOrdi"%>
 <%@page import="src.models.clients.Client"%>
 
 <%
-    TypeComposant [] tps = null;
-    if(request.getAttribute("tps")!=null) {
-        tps = (TypeComposant[]) request.getAttribute("tps");
-    }
 
     Reparation[] reparations = null;
     if(request.getAttribute("reparations")!=null) {

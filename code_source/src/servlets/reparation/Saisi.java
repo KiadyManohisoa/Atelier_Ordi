@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.sql.Connection;
 import src.models.processus.Reparation;
+import src.models.processus.Technicien;
 
 @WebServlet("/reparation/saisie")
 public class Saisi extends HttpServlet {
@@ -28,10 +29,12 @@ public class Saisi extends HttpServlet {
             MarqueOrdi[] marques = new MarqueOrdi().lister(co);
             TypeComposant[] tps = new TypeComposant().lister(co);
             Categorie[] cats = new Categorie().lister(co);
+            Technicien [] techs = new Technicien().lister(co);
             request.setAttribute("clts", clts);
             request.setAttribute("marques", marques);
             request.setAttribute("tps", tps);
             request.setAttribute("cats", cats);
+            request.setAttribute("techs", techs);
         } catch (Exception e) {
             message = e.getMessage();
         } finally {
@@ -57,6 +60,7 @@ public class Saisi extends HttpServlet {
         String nomModele = request.getParameter("nomModele");
         String numeroSerie = request.getParameter("numeroSerie");
         String anneeSortie = request.getParameter("anneeSortie");
+        String idTechnicien = request.getParameter("idTechnicien");
 
         //liste des pannes 
         String [] idTypeComposantsEnPannes = request.getParameterValues("typeComposant[]");
@@ -70,7 +74,7 @@ public class Saisi extends HttpServlet {
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
-            Reparation reparation = new Reparation(new Client(idClient), new Ordinateur(idMarque, idCategorie, nomModele, numeroSerie, anneeSortie), dateReception, idTypeComposantsEnPannes, descriptionsPannes, idTypeComposantAremplacer);
+            Reparation reparation = new Reparation(new Client(idClient), new Ordinateur(idMarque, idCategorie, nomModele, numeroSerie, anneeSortie), dateReception, idTypeComposantsEnPannes, descriptionsPannes, idTypeComposantAremplacer, new Technicien(idTechnicien));
             reparation.enregistrer(co);
 
             Client[] clts = new Client().lister(co);

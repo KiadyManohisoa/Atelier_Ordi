@@ -2,6 +2,7 @@
 <%@page import="src.models.materiel.MarqueOrdi"%>
 <%@page import="src.models.materiel.TypeComposant"%>
 <%@page import="src.models.materiel.Categorie"%>
+<%@page import="src.models.processus.Technicien"%>
 
 <%
   Client [] clts = null;
@@ -22,6 +23,11 @@
   Categorie [] cats = null;
   if(request.getAttribute("cats")!=null) {
     cats = (Categorie[]) request.getAttribute("cats");
+  }
+
+  Technicien [] techs = null;
+  if(request.getAttribute("techs")!=null) {
+    techs = (Technicien[]) request.getAttribute("techs");
   }
 
 %>
@@ -143,16 +149,33 @@
                 <hr class="my-4">
     
                 <!-- Section 3 -->
-                <div class="col-md-12 section3">
+                <div class="col-md-6 section3">
                   <h6 class="fw-semibold text-muted">3) Composants à remplacer</h6>
-                  <%
-                  if(tps!=null) {
-                    for(int i=0;i<tps.length;i++) { %>
-                      <div class="form-check">
-                        <input name="composantsRemplaces[]" class="form-check-input" type="checkbox" value="<%=tps[i].getId()%>" id="cpuCheck">
-                        <label class="form-check-label" for="cpuCheck"> <%=tps[i].getLibelle()%> </label>
-                      </div>
-                    <% } } %>
+                  <div class="col-md-12">
+                    <%
+                    if(tps!=null) {
+                      for(int i=0;i<tps.length;i++) { %>
+                        <div class="form-check">
+                          <input name="composantsRemplaces[]" class="form-check-input" type="checkbox" value="<%=tps[i].getId()%>" id="cpuCheck">
+                          <label class="form-check-label" for="cpuCheck"> <%=tps[i].getLibelle()%> </label>
+                        </div>
+                      <% } } %>
+                    </div>
+                </div>
+
+                <div class="col-md-6 section4 border-start">
+                  <h6 class="fw-semibold text-muted">4) Technicien responsable :</h6>
+                  <div class="col-md-12">
+                    <div class="form-floating mb-3">
+                      <select name="idTechnicien" class="form-select" id="floatingSelectClient" aria-label="Choisissez le technicien">
+                        <option value="">Choisissez le technicien responsable</option>
+                        <% if(techs!=null) { for(int i=0;i<techs.length;i++) { %>
+                        <option value="<%=techs[i].getId()%>"><%=techs[i].getNom()%> <%=techs[i].getPrenom()%></option>
+                        <% } } %>
+                      </select>
+                      <label for="floatingSelectClient">Technicien</label>
+                    </div>
+                  </div>
                 </div>
     
                 <!-- Bouton Valider en bas -->

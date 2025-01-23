@@ -22,7 +22,7 @@ public class ValidationRetour extends HttpServlet {
         try {
             co = new UtilDB().getConnection();
             Reparation reparation = new Reparation().obtenirParId(co, idReparation);
-            reparation.setAvancement(reparation.getAvancement()+1);
+            //reparation.setAvancement(reparation.getAvancement()+1);
             reparation.mettreAjour(co);
             message = "Réparation "+idReparation+" retournée avec succès";   
     

@@ -24,7 +24,7 @@ public class EnCours extends HttpServlet {
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
-            Reparation [] reparations = new Reparation().listerParAvancement(co, 0);
+            Reparation [] reparations = new Reparation().listerOrdinateursEnCours(co);
             request.setAttribute("reparations", reparations);
         } catch (Exception e) {
             message = e.getMessage();
