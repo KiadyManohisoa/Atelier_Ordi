@@ -23,12 +23,16 @@ INSERT INTO Categorie (libelle) VALUES
 ('Portable'),
 ('Gamers');
 
-INSERT INTO Technicien (nom, prenom) VALUES
-('Dupont', 'Jean'),
-('Martin', 'Claire'),
-('Nguyen', 'Thierry'),
-('Kante', 'Alice'),
-('Smith', 'John');
+INSERT INTO Genre (libelle) VALUES 
+('homme'),
+('femme');
+
+INSERT INTO Technicien (nom, prenom, idGenre) VALUES
+('Dupont', 'Jean', 'GR000001'),
+('Martin', 'Claire', 'GR000002'),
+('Nguyen', 'Thierry', 'GR000001'),
+('Kante', 'Alice', 'GR000002'),
+('Smith', 'John', 'GR000001');
 
 INSERT INTO ReparationOrdi (nomModele, numeroSerie, anneeSortie, dateReception, idClient, idMarqueOrdinateur, idCategorie, idTechnicien) VALUES
 ('EliteBook 840', 'SN123456', 2019, '2025-01-01', 'CLT000001', 'MRK000001', 'CAT000001', 'TC000001'),

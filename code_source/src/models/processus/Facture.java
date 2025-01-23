@@ -3,7 +3,7 @@ package src.models.processus;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-
+import src.models.util.AppConfig;
 import src.models.util.Periode;
 import src.models.util.Utilitaire;
 
@@ -62,7 +62,12 @@ public class Facture {
         try {
             double p = Double.valueOf(pc);
             this.setPourcentageCommission(p);
-            this.setCommissionTech(this.getCoutTotal()*(p/100.00));
+            if(this.getCoutTotal()>AppConfig.borneMinCoutTotal) {
+                this.setCommissionTech(this.getCoutTotal()*(p/100.00));
+            }
+            else {
+                this.setCommissionTech(0);
+            }
         } catch (Exception e) {
             throw new Exception("Format du pourcentage de commission pour la facturation invalide, avec valeur "+pc);
         }

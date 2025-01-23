@@ -9,7 +9,17 @@ public class Technicien {
     String id;
     String nom;
     String prenom;
-    
+    Genre genre;
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+
     public Technicien(String id) throws Exception {
         this.setId(id);
     }

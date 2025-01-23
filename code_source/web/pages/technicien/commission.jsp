@@ -1,4 +1,6 @@
 <%@page import="src.models.processus.CommissionTechnicien"%>
+<%@page import="src.models.processus.Technicien"%>
+<%@page import="src.models.processus.Genre"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 
@@ -11,6 +13,16 @@
   List<CommissionTechnicien> ct = null;
   if(request.getAttribute("ct")!=null) {
     ct = (List<CommissionTechnicien>)request.getAttribute("ct");
+  }
+
+  double [] coms = new double [2];
+  coms[0] = 0;
+  coms[1] = 0;
+  int isReady = 0;
+
+  if(request.getAttribute("coms")!=null) {
+    coms = (double[]) request.getAttribute("coms");
+    isReady=1;
   }
 %>
 
@@ -61,6 +73,7 @@
                             <th scope="col">Nom</th>
                             <th scope="col">Prénom</th>
                             <th scope="col">Valeur commmision</th>
+                            <th scope="col">Genre</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -72,12 +85,38 @@
                                 <td><%=ct.get(i).getTechnicien().getNom()%></td>
                                 <td><%=ct.get(i).getTechnicien().getPrenom()%></td>
                                 <td><%=ct.get(i).getValeurCommission()%></td>
+                                <td><%=ct.get(i).getTechnicien().getGenre().getLibelle()%></td>
                             </tr>
                         <% } } %>
 
                         </tbody>
                         
                       </table>
+
+                      <%
+                        if(isReady==1) {
+                          %>
+                      <h5 class="card-title">Commissions par genre</h5>
+        
+                      <!-- Table with stripped rows -->
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th scope="col">Homme</th>
+                            <th scope="col">Femme</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td> <%=coms[0]%></td>
+                            <td> <%=coms[1]%> </td>
+                          </tr>
+
+                        </tbody>
+                        
+                      </table>
+                        <% }                      
+                      %>
 
                     </div>
                   </div>
