@@ -68,11 +68,31 @@ CREATE TABLE ComposantsDuMois(
    FOREIGN KEY(idComposant) REFERENCES Composant(id)
 );
 
+CREATE TABLE Genre(
+   id VARCHAR(16)  DEFAULT ('GR') || LPAD(nextval('s_Genre')::TEXT, 6, '0'),
+   libelle VARCHAR(40)  NOT NULL,
+   PRIMARY KEY(id),
+   UNIQUE(libelle)
+);
+
+CREATE TABLE EntreeComposant(
+   id VARCHAR(15)  DEFAULT ('ECMP') || LPAD(nextval('s_EntreeComposant')::TEXT, 6, '0'),
+   dateEntree DATE DEFAULT CURRENT_DATE,
+   quantite INTEGER NOT NULL CHECK (quantite > 0),
+   prixUnitaire NUMERIC(14,2)   NOT NULL CHECK (prixUnitaire > 0),
+   d_reste INTEGER NOT NULL CHECK (d_reste >=0),
+   idComposant VARCHAR(15)  NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(idComposant) REFERENCES Composant(id)
+);
+
 CREATE TABLE Technicien(
    id VARCHAR(16)  DEFAULT ('TC') || LPAD(nextval('s_Technicien')::TEXT, 6, '0'),
    nom VARCHAR(100)  NOT NULL,
    prenom VARCHAR(50) ,
-   PRIMARY KEY(id)
+   idGenre VARCHAR(16)  NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(idGenre) REFERENCES Genre(id)
 );
 
 CREATE TABLE ReparationOrdi(
@@ -111,22 +131,11 @@ CREATE TABLE Facture(
    dateFacturation DATE NOT NULL DEFAULT CURRENT_DATE,
    d_periodeFacturation CHAR(7)  NOT NULL,
    coutTotal NUMERIC(14,2)   CHECK (coutTotal>0),
-   d_commissionTech NUMERIC(14,2)   NOT NULL CHECK (d_commissionTech>0),
+   d_commissionTech NUMERIC(14,2)   NOT NULL,
    id_reparationOrdi VARCHAR(15)  NOT NULL,
    PRIMARY KEY(id),
    UNIQUE(id_reparationOrdi),
    FOREIGN KEY(id_reparationOrdi) REFERENCES ReparationOrdi(id)
-);
-
-CREATE TABLE EntreeComposant(
-   id VARCHAR(15)  DEFAULT ('ECMP') || LPAD(nextval('s_EntreeComposant')::TEXT, 6, '0'),
-   dateEntree DATE DEFAULT CURRENT_DATE,
-   quantite INTEGER NOT NULL CHECK (quantite > 0),
-   prixUnitaire NUMERIC(14,2)   NOT NULL CHECK (prixUnitaire > 0),
-   d_reste INTEGER NOT NULL CHECK (d_reste >=0),
-   idComposant VARCHAR(15)  NOT NULL,
-   PRIMARY KEY(id),
-   FOREIGN KEY(idComposant) REFERENCES Composant(id)
 );
 
 CREATE TABLE PanneOrdi(

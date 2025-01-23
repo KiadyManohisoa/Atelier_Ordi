@@ -61,8 +61,19 @@ FROM Facture f
 ON f.id_reparationOrdi = r.id;
 
 CREATE OR REPLACE VIEW v_commissionTechnicien 
-    AS SELECT t.id, t.nom, t.prenom, f.d_periodeFacturation, sum(f.d_commissionTech) as commission
+    AS SELECT t.id, t.nom, t.prenom, f.d_periodeFacturation, sum(f.d_commissionTech) as commission, g.id as idGenre, g.libelle as libelleGenre
 FROM v_factureReparation f 
     INNER JOIN Technicien t
 ON f.idTechnicien=t.id
-    GROUP BY t.id, f.d_periodeFacturation;
+    LEFT JOIN Genre g 
+ON t.idGenre=g.id   
+    GROUP BY t.id, f.d_periodeFacturation, g.id;
+
+CREATE OR REPLACE VIEW v_commissionsParGenre 
+    AS SELECT g.id, g.libelle, sum(f.d_commissionTech) as commission, f.d_periodeFacturation
+FROM v_factureReparation f 
+    INNER JOIN Technicien t
+ON f.idTechnicien=t.id
+    LEFT JOIN Genre g 
+ON t.idGenre=g.id   
+    GROUP BY g.id, g.libelle, f.d_periodeFacturation;

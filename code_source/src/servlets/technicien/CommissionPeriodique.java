@@ -29,9 +29,12 @@ public class CommissionPeriodique extends HttpServlet {
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
-            List<CommissionTechnicien> ct = new CommissionTechnicien().listerCommissionTechParPeriode(co, new Periode(periode));
+            CommissionTechnicien com = new CommissionTechnicien();
+            List<CommissionTechnicien> ct = com.listerCommissionTechParPeriode(co, new Periode(periode));
+            double [] coms =com.toutauxDesHommesEtFemmes(ct);
             request.setAttribute("ct", ct);
             request.setAttribute("periode",periode);
+            request.setAttribute("coms", coms);
         } catch (Exception e) {
             message = e.getMessage();
             e.printStackTrace();
