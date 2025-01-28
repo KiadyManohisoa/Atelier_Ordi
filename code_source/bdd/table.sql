@@ -75,6 +75,15 @@ CREATE TABLE Genre(
    UNIQUE(libelle)
 );
 
+CREATE TABLE HistoriqueComposant(
+   id VARCHAR(16)  DEFAULT ('HCMP') || LPAD(nextval('s_HistoriqueComposant')::TEXT, 6, '0'),
+   dateMouvement DATE NOT NULL DEFAULT CURRENT_DATE,
+   prixVente NUMERIC(14,2)   NOT NULL CHECK (prixVente > 0),
+   idComposant VARCHAR(15)  NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(idComposant) REFERENCES Composant(id)
+);
+
 CREATE TABLE EntreeComposant(
    id VARCHAR(15)  DEFAULT ('ECMP') || LPAD(nextval('s_EntreeComposant')::TEXT, 6, '0'),
    dateEntree DATE DEFAULT CURRENT_DATE,
