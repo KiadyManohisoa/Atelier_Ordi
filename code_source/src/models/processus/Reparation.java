@@ -45,7 +45,32 @@ public class Reparation {
         this.setListeActionComposant(idComposantsAremplacer);
         this.setTechnicien(tech);
     }
-    
+
+    public double getCoutTotalRemplacement(Connection co) throws Exception {
+        double coutTotal = 0;
+        PreparedStatement st = null;
+        ResultSet res = null;
+        String query = "select * from v_coutMaterielsTotalParReparation where idReparation=(?)";
+        try {
+            st = co.prepareStatement(query);
+            st.setString(1, this.getId());
+            res = st.executeQuery();
+            if (res.next()) {
+                coutTotal = res.getDouble("coutMateriels");
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (res != null) {
+                res.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+        }
+        return coutTotal;
+    }    
+
     public Reparation[] getReparationsParDate(Connection co, String date) throws Exception {
         Reparation[] reparationO;
         PreparedStatement st = null;
@@ -389,7 +414,8 @@ public class Reparation {
         List<ActionComposant> actions = new ArrayList<>();
         if(idComposantsAremplacer!=null && idComposantsAremplacer.length>0) {
             for (int i = 0; i < idComposantsAremplacer.length; i++) {
-                actions.add(new ActionComposant(idComposantsAremplacer[i]));
+                String [] ids = idComposantsAremplacer[i].split("-");
+                actions.add(new ActionComposant(ids[0], ids[1]));
             }
         }
         this.setListeActionComposant(actions);

@@ -88,8 +88,8 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                      <input name="coutTotal" type="text" class="form-control" id="coutTotal" placeholder="0.00">
-                      <label for="coutTotal">Coût total </label>
+                      <input name="coutMainDoeuvre" type="text" class="form-control" id="coutMainDoeuvre" placeholder="0.00">
+                      <label for="coutMainDoeuvre">Coût de la main d'œuvre </label>
                     </div>
 
                     <div class="form-floating mb-3">

@@ -139,6 +139,8 @@ CREATE TABLE Facture(
    id VARCHAR(15)  DEFAULT ('FCT') || LPAD(nextval('s_Facture')::TEXT, 6, '0'),
    dateFacturation DATE NOT NULL DEFAULT CURRENT_DATE,
    d_periodeFacturation CHAR(7)  NOT NULL,
+   coutMateriels NUMERIC(14,2)  ,
+   coutMainDoeuvre NUMERIC(14,2)  ,
    coutTotal NUMERIC(14,2)   CHECK (coutTotal>0),
    d_commissionTech NUMERIC(14,2)   NOT NULL,
    id_reparationOrdi VARCHAR(15)  NOT NULL,

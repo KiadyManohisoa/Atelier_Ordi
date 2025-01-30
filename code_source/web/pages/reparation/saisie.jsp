@@ -1,9 +1,12 @@
 <%@page import="src.models.clients.Client"%>
 <%@page import="src.models.materiel.MarqueOrdi"%>
+<%@page import="src.models.materiel.Composant"%>
 <%@page import="src.models.materiel.TypeComposant"%>
 <%@page import="src.models.materiel.Categorie"%>
 <%@page import="src.models.processus.Technicien"%>
 <%@page import="src.models.composants.ComposantParType"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
 
 <%
   Client [] clts = null;
@@ -15,11 +18,6 @@
   if(request.getAttribute("marques")!=null) {
     marques = (MarqueOrdi[]) request.getAttribute("marques");
   }
-
-  TypeComposant [] tps = null;
-  if(request.getAttribute("tps")!=null) {
-    tps = (TypeComposant[]) request.getAttribute("tps");
-  } 
 
   Categorie [] cats = null;
   if(request.getAttribute("cats")!=null) {
@@ -35,7 +33,6 @@
   if(request.getAttribute("cParTypes")!=null) {
     cParTypes = (ComposantParType[]) request.getAttribute("cParTypes");
   }
-
 
 %>
 
@@ -156,19 +153,55 @@
                 <hr class="my-4">
     
                 <!-- Section 3 -->
-                <div class="col-md-6 section3">
+              <div class="col-md-6 section3">
                   <h6 class="fw-semibold text-muted">3) Composants à remplacer</h6>
                   <div class="col-md-12">
-                    <%
-                    if(tps!=null) {
-                      for(int i=0;i<tps.length;i++) { %>
-                        <div class="form-check">
-                          <input name="composantsRemplaces[]" class="form-check-input" type="checkbox" value="<%=tps[i].getId()%>" id="cpuCheck">
-                          <label class="form-check-label" for="cpuCheck"> <%=tps[i].getLibelle()%> </label>
-                        </div>
-                      <% } } %>
-                    </div>
-                </div>
+                      <%
+                      if (cParTypes != null) {
+                          for (int i = 0; i < cParTypes.length; i++) { 
+                              TypeComposant typeComposant = cParTypes[i].getTypeComposant();
+                              List<Composant> composants = cParTypes[i].getComposants();
+                      %>
+                              <div class="d-flex align-items-center gap-3 mb-2">
+                                  <div class="form-check">
+                                      <input 
+                                          name="composantsRemplaces[]" 
+                                          class="form-check-input composant-checkbox" 
+                                          type="checkbox" 
+                                          value="<%= typeComposant.getId() %>" 
+                                          id="checkbox-<%= typeComposant.getId() %>"
+                                          data-type-id="<%= typeComposant.getId() %>"
+                                      >
+                                      <label class="form-check-label" for="checkbox-<%= typeComposant.getId() %>">
+                                          <%= typeComposant.getLibelle() %>
+                                      </label>
+                                  </div>
+                                  <div id="select-container-<%= typeComposant.getId() %>" class="composant-select-container flex-grow-1" style="display: none;">
+                                      <select 
+                                          name="composantSelectionne[]" 
+                                          class="form-select composant-select" 
+                                          id="select-<%= typeComposant.getId() %>"
+                                      >
+                                          <option value="">Choisir un composant</option>
+                                          <%
+                                          for (Composant composant : composants) {
+                                          %>
+                                              <option value="<%= composant.getId() %>">
+                                                  <%= composant.getMarqueComposant().getLibelle() %> - <%= composant.getNomModele() %>
+                                              </option>
+                                          <%
+                                          }
+                                          %>
+                                      </select>
+                                  </div>
+                              </div>
+                      <%
+                          }
+                      }
+                      %>
+                  </div>
+              </div>
+
 
                 <div class="col-md-6 section4 border-start">
                   <h6 class="fw-semibold text-muted">4) Technicien responsable :</h6>
@@ -201,9 +234,9 @@
       
     <script>
       const composants = [
-        <% if (tps != null) {
-          for (int i = 0; i < tps.length; i++) { %>
-            { id: "<%= tps[i].getId() %>", libelle: "<%= tps[i].getLibelle() %>" },
+        <% if (cParTypes != null) {
+          for (int i = 0; i < cParTypes.length; i++) { %>
+            { id: "<%= cParTypes[i].getTypeComposant().getId() %>", libelle: "<%= cParTypes[i].getTypeComposant().getLibelle() %>" },
         <% } } %>
       ];
     </script>

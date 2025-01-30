@@ -72,8 +72,8 @@ public class ComposantParType {
                 TypeComposant typeComposant = new TypeComposant();
                 typeComposant.setId(res.getString("id"));
                 typeComposant.setLibelle(res.getString("libelle"));
-                this.setTypeComposant(typeComposant);
-                this.setComposants(this.getComposantsParType(co, typeComposant));
+                cmParTypes[i].setTypeComposant(typeComposant);
+                cmParTypes[i].setComposants(this.getComposantsParType(co, typeComposant));
                 i++;
             }
 

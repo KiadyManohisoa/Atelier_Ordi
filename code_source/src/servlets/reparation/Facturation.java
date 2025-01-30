@@ -22,7 +22,7 @@ public class Facturation extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idReparation = request.getParameter("idReparation");
         String dateFacturation = request.getParameter("dateFacturation");
-        String coutTotal = request.getParameter("coutTotal");
+        String coutMainDoeuvre = request.getParameter("coutMainDoeuvre");
         String pourcentageCommission = request.getParameter("pourcentageCommission");
 
         String url = new String("/reparation/encours");
@@ -30,7 +30,7 @@ public class Facturation extends HttpServlet {
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
-            Facture fact = new Facture(new Reparation(idReparation), dateFacturation, coutTotal, pourcentageCommission);
+            Facture fact = new Facture(new Reparation(idReparation), dateFacturation, coutMainDoeuvre, pourcentageCommission, co);
             fact.enregistrer(co);
             message = "Réparation facturée avec succès";
         } catch (Exception e) {
