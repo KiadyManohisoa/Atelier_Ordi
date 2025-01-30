@@ -70,4 +70,9 @@ public class MarqueComposant {
     public MarqueComposant(){
         
     }
+
+    @Override
+    public String toString() {
+        return "MarqueComposant [id=" + id + ", libelle=" + libelle + "]";
+    }
 }

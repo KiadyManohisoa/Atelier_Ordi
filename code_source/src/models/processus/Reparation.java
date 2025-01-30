@@ -286,7 +286,11 @@ public class Reparation {
             st.setString(8, this.getOrdinateur().getCategorie().getId());
             st.setString(9, this.getTechnicien().getId());
             st.executeUpdate();
-        } finally {
+        } 
+        catch(Exception e) {
+            throw e;
+        }
+        finally {
             if (st != null) {
                 st.close();
             }

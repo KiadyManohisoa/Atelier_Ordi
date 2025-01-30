@@ -24,13 +24,19 @@ public class Insertion extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String url = "/web/pages/composants/insertion.jsp";
         String message = new String();
+        if(request.getParameter("message")!=null && !request.getParameter("message").isEmpty()) {
+            message = request.getParameter("message");
+        }
+        
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
             TypeComposant [] tps = new TypeComposant().lister(co);
             MarqueComposant[] marques = new MarqueComposant().lister(co);
+            Composant[] composants = new Composant().lister(co);
             request.setAttribute("tps", tps);
             request.setAttribute("marques", marques);
+            request.setAttribute("composants",composants);
         } catch (Exception e) {
             message = e.getMessage();
             // e.printStackTrace();
@@ -55,6 +61,7 @@ public class Insertion extends HttpServlet {
         String idMarqueComposant = request.getParameter("idMarqueComposant");
         String nomModele = request.getParameter("nomModele");
         String description = request.getParameter("description");
+        String pv = request.getParameter("prixVente");
 
 
         String message = new String();
@@ -62,13 +69,16 @@ public class Insertion extends HttpServlet {
         Connection co = null;
         try {
             co = new UtilDB().getConnection();
-            Composant cmp = new Composant(nomModele, description, idMarqueComposant, idTypeComposant);
+            Composant cmp = new Composant(nomModele, description, idMarqueComposant, idTypeComposant, pv);
             cmp.enregistrer(co);
 
             TypeComposant [] tps = new TypeComposant().lister(co);
             MarqueComposant[] marques = new MarqueComposant().lister(co);
+            Composant[] composants = new Composant().lister(co);
             request.setAttribute("tps", tps);
             request.setAttribute("marques", marques);
+            request.setAttribute("composants",composants);
+
             
             message = "Opération effectuée avec succès";
         } catch (Exception e) {

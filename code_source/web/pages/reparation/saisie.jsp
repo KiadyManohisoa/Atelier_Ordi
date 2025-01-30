@@ -3,6 +3,7 @@
 <%@page import="src.models.materiel.TypeComposant"%>
 <%@page import="src.models.materiel.Categorie"%>
 <%@page import="src.models.processus.Technicien"%>
+<%@page import="src.models.composants.ComposantParType"%>
 
 <%
   Client [] clts = null;
@@ -29,6 +30,12 @@
   if(request.getAttribute("techs")!=null) {
     techs = (Technicien[]) request.getAttribute("techs");
   }
+
+  ComposantParType [] cParTypes = null;
+  if(request.getAttribute("cParTypes")!=null) {
+    cParTypes = (ComposantParType[]) request.getAttribute("cParTypes");
+  }
+
 
 %>
 
