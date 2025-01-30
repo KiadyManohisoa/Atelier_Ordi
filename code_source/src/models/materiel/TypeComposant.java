@@ -69,4 +69,9 @@ public class TypeComposant {
         }
         return composants;
     }
+
+    @Override
+    public String toString() {
+        return "TypeComposant [id=" + id + ", libelle=" + libelle + "]";
+    }
 }

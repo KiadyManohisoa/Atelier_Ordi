@@ -19,6 +19,13 @@ INSERT INTO TypeComposant (libelle) VALUES
 ('Disque dur'),
 ('Ecran');
 
+INSERT INTO MarqueComposant ("libelle") VALUES 
+('Intel'),
+('AMD'),
+('NVIDIA'),
+('Corsair'),
+('Kingston');
+
 INSERT INTO Categorie (libelle) VALUES 
 ('Portable'),
 ('Gamers');
@@ -61,22 +68,15 @@ INSERT INTO PanneOrdi (idReparationOrdi, idTypeComposant, description) VALUES
 ('REP000005', 'TCMP000004', 'Disque dur endommage'),
 ('REP000005', 'TCMP000002', 'Probleme avec la carte mere');
 
-INSERT INTO ActionComposant (idReparationOrdi, idTypeComposant) VALUES 
-('REP000002', 'TCMP000002');
+INSERT INTO ActionComposant (idReparationOrdi, idTypeComposant, idComposant) VALUES 
+('REP000002', 'TCMP000003', 'CMP000004');
 
-INSERT INTO MarqueComposant ("libelle") VALUES 
-('Intel'),
-('AMD'),
-('NVIDIA'),
-('Corsair'),
-('Kingston');
-
-INSERT INTO Composant (nommodele, description, idmarquecomposant, idtypecomposant) VALUES
-('Core i9-13900K', 'Processeur haut de gamme Intel', 'MCMP000001', 'TCMP000001'),
-('Ryzen 7 5800X', 'Processeur performant AMD', 'MCMP000002', 'TCMP000001'),
-('GeForce RTX 3080', 'Carte graphique NVIDIA', 'MCMP000003', 'TCMP000002'),
-('Vengeance LPX 16GB', 'RAM DDR4 Corsair, 3200MHz', 'MCMP000004', 'TCMP000003'),
-('KC3000 1TB', 'SSD rapide Kingston, NVMe', 'MCMP000005', 'TCMP000004');
+INSERT INTO Composant (nommodele, description, idmarquecomposant, idtypecomposant, d_prixVente) VALUES
+('Core i9-13900K', 'Processeur haut de gamme Intel', 'MCMP000001', 'TCMP000001', 559.99),
+('Ryzen 7 5800X', 'Processeur performant AMD', 'MCMP000002', 'TCMP000001', 359.99),
+('GeForce RTX 3080', 'Carte graphique NVIDIA', 'MCMP000003', 'TCMP000002', 659.99),
+('Vengeance LPX 16GB', 'RAM DDR4 Corsair, 3200MHz', 'MCMP000004', 'TCMP000003', 69.99),
+('KC3000 1TB', 'SSD rapide Kingston, NVMe', 'MCMP000005', 'TCMP000004', 109.99);
 
 INSERT INTO Facture (datefacturation, d_periodefacturation, couttotal, d_commissiontech, id_reparationordi) VALUES
 ('2025-01-10', '2025-01', 500.00, 25.00, 'REP000001'),
@@ -90,3 +90,43 @@ INSERT INTO Facture (datefacturation, d_periodefacturation, couttotal, d_commiss
 ('2025-05-05', '2025-05', 750.00, 37.50, 'REP000009'),
 ('2025-05-15', '2025-05', 950.00, 47.50, 'REP000010');
 
+
+INSERT INTO historiqueComposant (datemouvement, prixvente, idcomposant)
+VALUES
+('2025-01-01', 599.99, 'CMP000001'),
+('2025-01-15', 589.99, 'CMP000001'),
+('2025-01-30', 579.99, 'CMP000001'),
+('2025-02-10', 569.99, 'CMP000001'),
+('2025-02-25', 559.99, 'CMP000001');
+
+INSERT INTO historiqueComposant (datemouvement, prixvente, idcomposant)
+VALUES
+('2025-01-01', 399.99, 'CMP000002'),
+('2025-01-10', 389.99, 'CMP000002'),
+('2025-01-20', 379.99, 'CMP000002'),
+('2025-02-01', 369.99, 'CMP000002'),
+('2025-02-15', 359.99, 'CMP000002');
+
+INSERT INTO historiqueComposant (datemouvement, prixvente, idcomposant)
+VALUES
+('2025-01-01', 699.99, 'CMP000003'),
+('2025-01-12', 689.99, 'CMP000003'),
+('2025-01-25', 679.99, 'CMP000003'),
+('2025-02-05', 669.99, 'CMP000003'),
+('2025-02-20', 659.99, 'CMP000003');
+
+INSERT INTO historiqueComposant (datemouvement, prixvente, idcomposant)
+VALUES
+('2025-01-01', 89.99, 'CMP000004'),
+('2025-01-08', 84.99, 'CMP000004'),
+('2025-01-18', 79.99, 'CMP000004'),
+('2025-02-02', 74.99, 'CMP000004'),
+('2025-02-14', 69.99, 'CMP000004');
+
+INSERT INTO historiqueComposant (datemouvement, prixvente, idcomposant)
+VALUES
+('2025-01-01', 129.99, 'CMP000005'),
+('2025-01-10', 124.99, 'CMP000005'),
+('2025-01-22', 119.99, 'CMP000005'),
+('2025-02-01', 114.99, 'CMP000005'),
+('2025-02-20', 109.99, 'CMP000005');

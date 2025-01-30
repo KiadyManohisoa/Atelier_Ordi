@@ -12,31 +12,37 @@ public class Facture {
     String id;
     Date dateFacturation;
     Periode periode;
+    double coutMateriels;
+    double coutMainDoeuvre;
     double coutTotal;
     double pourcentageCommission;
     double commissionTech;
     Reparation reparation;
 
-    public Facture(Reparation reparation, String dateFacturation, String coutTotal, String pourcentageCommission) throws Exception {
+    public Facture(Reparation reparation, String dateFacturation, String coutMatos, String pourcentageCommission, Connection co) throws Exception {
         this.setReparation(reparation);
         this.setDateFacturation(dateFacturation);
-        this.setCoutTotal(coutTotal);
+        this.setCoutMateriels(reparation.getCoutTotalRemplacement(co));
+        this.setCoutMainDoeuvre(coutMatos);
+        this.setCoutTotal();
         this.setPourcentageCommission(pourcentageCommission);
     }
 
     public void enregistrer(Connection co) throws Exception {
         PreparedStatement st = null;
-        String query = "insert into facture (dateFacturation, d_periodeFacturation, coutTotal, d_commissionTech, id_reparationOrdi)"
-        +" values (?, ?, ?, ?, ?)";
+        String query = "insert into facture (dateFacturation, d_periodeFacturation, coutMateriels, coutMainDoeuvre, coutTotal, d_commissionTech, id_reparationOrdi)"
+        +" values (?, ?, ?, ?, ?, ?, ?)";
         try {
             co.setAutoCommit(false);
             st = co.prepareStatement(query);
 
             st.setDate(1, this.getDateFacturation());
             st.setString(2, this.getPeriode().getValeur());
-            st.setDouble(3, this.getCoutTotal());
-            st.setDouble(4, this.getCommissionTech());
-            st.setString(5, this.getReparation().getId());
+            st.setDouble(3, this.getCoutMateriels());
+            st.setDouble(4, this.getCoutMainDoeuvre());
+            st.setDouble(5, this.getCoutTotal());
+            st.setDouble(6, this.getCommissionTech());
+            st.setString(7, this.getReparation().getId());
             st.executeUpdate();
             co.commit();
         } catch (Exception e) {
@@ -98,6 +104,30 @@ public class Facture {
             throw new Exception("Format de la date de facturation invalide, avec valeur "+d);
         }
     }
+
+    public double getCoutMateriels() {
+        return coutMateriels;
+    }
+
+    public void setCoutMateriels(double coutMateriels) {
+        this.coutMateriels = coutMateriels;
+    }
+    public double getCoutMainDoeuvre() {
+        return coutMainDoeuvre;
+    }
+
+    public void setCoutMainDoeuvre(String cm) throws Exception {
+        try {
+            double c = Double.valueOf(cm);
+            this.setCoutMainDoeuvre(c);
+        } catch (Exception e) {
+            throw new Exception("Format du cout de main d\\'oeuvre pour la facturation invalide, avec valeur "+cm);
+        }
+    }
+
+    public void setCoutMainDoeuvre(double coutMainDoeuvre) {
+        this.coutMainDoeuvre = coutMainDoeuvre;
+    }
     
     public void setDateFacturation(Date dateFacturation) {
         this.dateFacturation = dateFacturation;
@@ -122,6 +152,10 @@ public class Facture {
         } catch (Exception e) {
             throw new Exception("Format du cout total pour la facturation invalide, avec valeur "+ct);
         }
+    }
+
+    public void setCoutTotal() {
+        this.coutTotal = this.getCoutMainDoeuvre()+this.getCoutMateriels();
     }
     
     public void setCoutTotal(double coutTotal) {

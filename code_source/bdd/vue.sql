@@ -77,3 +77,12 @@ ON f.idTechnicien=t.id
     LEFT JOIN Genre g 
 ON t.idGenre=g.id   
     GROUP BY g.id, g.libelle, f.d_periodeFacturation;
+
+CREATE OR REPLACE VIEW v_coutMaterielsTotalParReparation 
+    AS SELECT r.id as idReparation, COALESCE(SUM(c.d_prixVente),0) as coutMateriels FROM ReparationOrdi r 
+LEFT JOIN ActionComposant a 
+    ON r.id=a.idReparationOrdi 
+LEFT JOIN Composant c 
+    ON a.idComposant=c.id
+GROUP BY 
+    r.id;

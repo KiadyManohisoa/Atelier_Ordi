@@ -42,6 +42,7 @@ CREATE TABLE Composant(
    id VARCHAR(15)  DEFAULT ('CMP') || LPAD(nextval('s_Composant')::TEXT, 6, '0'),
    nomModele VARCHAR(50)  NOT NULL,
    description TEXT,
+   d_prixVente NUMERIC(14,2)   NOT NULL CHECK (d_prixVente>0),
    idMarqueComposant VARCHAR(16)  NOT NULL,
    idTypeComposant VARCHAR(15)  NOT NULL,
    PRIMARY KEY(id),
@@ -73,6 +74,15 @@ CREATE TABLE Genre(
    libelle VARCHAR(40)  NOT NULL,
    PRIMARY KEY(id),
    UNIQUE(libelle)
+);
+
+CREATE TABLE HistoriqueComposant(
+   id VARCHAR(16)  DEFAULT ('HCMP') || LPAD(nextval('s_HistoriqueComposant')::TEXT, 6, '0'),
+   dateMouvement DATE NOT NULL DEFAULT CURRENT_DATE,
+   prixVente NUMERIC(14,2)   NOT NULL CHECK (prixVente > 0),
+   idComposant VARCHAR(15)  NOT NULL,
+   PRIMARY KEY(id),
+   FOREIGN KEY(idComposant) REFERENCES Composant(id)
 );
 
 CREATE TABLE EntreeComposant(
@@ -115,9 +125,8 @@ CREATE TABLE ReparationOrdi(
 CREATE TABLE Devis(
    id VARCHAR(15)  DEFAULT ('DVS') || LPAD(nextval('s_Devis')::TEXT, 6, '0'),
    dateDevis DATE NOT NULL DEFAULT CURRENT_DATE,
-   fraisMateriel NUMERIC(14,2)   NOT NULL CHECK (fraisMateriel >=0),
-   fraisLogiciel NUMERIC(14,2)   NOT NULL CHECK (fraisLogiciel >=0),
-   fraisDiagnostic NUMERIC(14,2)   NOT NULL CHECK (fraisDiagnostic >=0),
+   coutMateriels NUMERIC(14,2)   NOT NULL CHECK (coutMateriels >=0),
+   coutMainDoeuvre NUMERIC(14,2)   NOT NULL CHECK (coutMainDoeuvre >0),
    delaiEstime SMALLINT NOT NULL,
    dateRecuperation DATE,
    id_reparationOrdi VARCHAR(15)  NOT NULL,
@@ -130,6 +139,8 @@ CREATE TABLE Facture(
    id VARCHAR(15)  DEFAULT ('FCT') || LPAD(nextval('s_Facture')::TEXT, 6, '0'),
    dateFacturation DATE NOT NULL DEFAULT CURRENT_DATE,
    d_periodeFacturation CHAR(7)  NOT NULL,
+   coutMateriels NUMERIC(14,2)  ,
+   coutMainDoeuvre NUMERIC(14,2)  ,
    coutTotal NUMERIC(14,2)   CHECK (coutTotal>0),
    d_commissionTech NUMERIC(14,2)   NOT NULL,
    id_reparationOrdi VARCHAR(15)  NOT NULL,
@@ -150,7 +161,9 @@ CREATE TABLE PanneOrdi(
 CREATE TABLE ActionComposant(
    idReparationOrdi VARCHAR(15) ,
    idTypeComposant VARCHAR(15) ,
-   PRIMARY KEY(idReparationOrdi, idTypeComposant),
+   idComposant VARCHAR(15) ,
+   PRIMARY KEY(idReparationOrdi, idTypeComposant, idComposant),
    FOREIGN KEY(idReparationOrdi) REFERENCES ReparationOrdi(id),
-   FOREIGN KEY(idTypeComposant) REFERENCES TypeComposant(id)
+   FOREIGN KEY(idTypeComposant) REFERENCES TypeComposant(id),
+   FOREIGN KEY(idComposant) REFERENCES Composant(id)
 );

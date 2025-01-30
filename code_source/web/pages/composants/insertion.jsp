@@ -1,5 +1,6 @@
 <%@page import="src.models.materiel.MarqueComposant"%>
 <%@page import="src.models.materiel.TypeComposant"%>
+<%@page import="src.models.materiel.Composant"%>
 
 <%
 
@@ -12,6 +13,12 @@
   if(request.getAttribute("marques")!=null) {
     marques = (MarqueComposant[]) request.getAttribute("marques");
   }
+
+  Composant [] composants = null;
+  if(request.getAttribute("composants")!=null) {
+    composants = (Composant[]) request.getAttribute("composants");
+  }
+
 
 %>
 
@@ -80,6 +87,13 @@
                         </div>
 
                         <div class="col-md-12">
+                            <div class="form-floating">
+                              <input name="prixVente" type="text" class="form-control" id="" placeholder="Prix de vente">
+                              <label for="floatingName">Prix de vente</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
                             <div class="form-floating mb-3">
                                 <textarea name="description" class="form-control" placeholder="Description" id="floatingTextarea" style="height: 100px;"></textarea>
                                 <label for="floatingTextarea">Description</label>
@@ -91,11 +105,89 @@
                         </div>
                       </form><!-- End floating Labels Form -->
         
+                    <h5 class="card-title">Liste des composants</h5>
+        
+                    <!-- Table with stripped rows -->
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Identifiant</th>
+                          <th scope="col">Nom modèle</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Marque</th>
+                          <th scope="col">Prix de vente</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      <%if(composants!=null) { 
+                          for(int i=0;i<composants.length;i++) { %>
+                          <tr>
+                              <td><%=composants[i].getId()%></td>
+                              <td><%=composants[i].getNomModele()%></td>
+                              <td><%=composants[i].getTypeComposant().getLibelle()%></td>
+                              <td><%=composants[i].getMarqueComposant().getLibelle()%></td>
+                              <td><%=composants[i].getPrixVente()%></td>
+                              <td>
+                                <a href="#" class="update-link" data-bs-toggle="modal" data-bs-target="#updateForm">
+                                  <i class="bi bi-pencil-square"></i>
+                                </a>
+                              </td>
+                          </tr>
+                      <% } } %>
+
+                      </tbody>
+                    </table>
+
                     </div>
                   </div>
             </div>
+
+          <div class="modal fade" id="updateForm" tabindex="-1" aria-labelledby="updateFormLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="formRetourLabel">Modification du composant</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="${pageContext.request.contextPath}/composant/mettreAjour" method="post">
+                  <div class="modal-body">
+                    <input type="hidden" name="idComposant" id="selectedId">
+
+                    <div class="form-floating mb-3">
+                      <input name="nouveauPrixVente" type="text" class="form-control" id="coutVente" placeholder="0.00">
+                      <label for="coutVente">Nouveau prix de vente </label>
+                    </div>
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const updateLinks = document.querySelectorAll(".update-link"); 
+            const hiddenInput = document.getElementById("selectedId"); 
+    
+            updateLinks.forEach(link => {
+                link.addEventListener("click", function (event) {
+                    event.preventDefault(); 
+                    const row = this.closest("tr"); 
+                    const id = row.querySelector("td:first-child").textContent.trim(); 
+                    hiddenInput.value = id; 
+                });
+            });
+        });
+    </script>
 
   </main>
 <!--main-->

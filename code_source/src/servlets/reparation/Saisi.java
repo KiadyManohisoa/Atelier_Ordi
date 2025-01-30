@@ -3,6 +3,7 @@ package src.servlets.reparation;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import src.models.clients.Client;
+import src.models.composants.ComposantParType;
 import src.models.materiel.Categorie;
 import src.models.materiel.MarqueOrdi;
 import src.models.materiel.Ordinateur;
@@ -30,11 +31,13 @@ public class Saisi extends HttpServlet {
             TypeComposant[] tps = new TypeComposant().lister(co);
             Categorie[] cats = new Categorie().lister(co);
             Technicien [] techs = new Technicien().lister(co);
+            ComposantParType [] cParTypes = new ComposantParType().lister(co);
             request.setAttribute("clts", clts);
             request.setAttribute("marques", marques);
             request.setAttribute("tps", tps);
             request.setAttribute("cats", cats);
             request.setAttribute("techs", techs);
+            request.setAttribute("cParTypes", cParTypes);
         } catch (Exception e) {
             message = e.getMessage();
         } finally {

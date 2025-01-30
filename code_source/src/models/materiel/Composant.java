@@ -3,6 +3,7 @@ package src.models.materiel;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import src.models.composants.HistoriqueComposant;
 import src.models.composants.StockComposant;
 
 public class Composant {
@@ -13,18 +14,106 @@ public class Composant {
     String nomModele;
     String description;
     StockComposant stockComposant;
+    double prixVente;
 
+    public Composant getById(Connection co) throws Exception{
+        Composant composant = null;
+        PreparedStatement st = null;
+        ResultSet res = null;
+        String query = "select * from v_composant where id=(?)";
+        try {
+            st = co.prepareStatement(query);
+            st.setString(1,this.getId());
+            res = st.executeQuery();
+
+            if (res.next()) {
+
+                composant = new Composant();
+                composant.setId(res.getString("id"));
+                composant.setDescription(res.getString("description"));
+                composant.setNomModele(res.getString("nommodele"));
+
+                MarqueComposant marquecomposant = new MarqueComposant();
+                marquecomposant.setId(res.getString("idmarquecomposant"));
+                marquecomposant.setLibelle(res.getString("marquecomposant"));
+
+                TypeComposant typecomposant=new TypeComposant();
+                typecomposant.setId(res.getString("idtypecomposant"));
+                typecomposant.setLibelle(res.getString("typecomposant"));
+
+                composant.setMarqueComposant(marquecomposant);
+                composant.setTypeComposant(typecomposant);
+            }
+            else {
+                throw new Exception("Composant introuvable pour l\\identifiant : "+this.getId());
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (res != null) {
+                res.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+        }
+        return composant;
+    }
+
+    public HistoriqueComposant[] getHistoriqueComposants(Connection co) throws Exception{
+        HistoriqueComposant[] hcomposants;
+        PreparedStatement st = null;
+        ResultSet res = null;
+        String query = "select * from HistoriqueComposant where idComposant=(?)";
+        try {
+            st = co.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            st.setString(1,this.getId());
+            res = st.executeQuery();
+
+            res.last();
+            int rowCount = res.getRow();
+            res.beforeFirst();
+
+            hcomposants = new HistoriqueComposant[rowCount];
+            int i = 0;
+            while (res.next()) {
+                hcomposants[i] = new HistoriqueComposant();
+                hcomposants[i].setId(res.getString("id"));
+
+                hcomposants[i].setDateMvt(res.getDate("dateMouvement"));
+                hcomposants[i].setPrixVente(res.getDouble("prixVente"));
+
+                Composant composant=new Composant();
+                composant.setId(res.getString("idComposant"));
+
+                hcomposants[i].setComposant(composant);
+                i++;
+            }
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (res != null) {
+                res.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+        }
+        return hcomposants;
+    }
 
     public Composant(String id, StockComposant sc) throws Exception {
         this.setId(id);
         this.setStockComposant(sc);
     }
 
-    public Composant(String nomModele, String description, String idMarqueComposant, String idTypeComposant) throws Exception {
+    public Composant(String nomModele, String description, String idMarqueComposant, String idTypeComposant, String pv) throws Exception {
         this.setNomModele(nomModele);
         this.setDescription(description);
         this.setMarqueComposant(new MarqueComposant(idMarqueComposant));
         this.setTypeComposant(new TypeComposant(idTypeComposant));
+        this.setPrixVente(pv);
     }
 
     public Composant(String id) {
@@ -67,36 +156,131 @@ public class Composant {
         this.description = description;
     }
 
+    public double getPrixVente() {
+        return prixVente;
+    }
+
+    public void setPrixVente(String pv) throws Exception {
+        try {
+            double p = Double.valueOf(pv);
+            this.setPrixVente(p);
+        } catch (Exception e) {
+            throw new Exception("Format du prix de vente invalide, avec valeur "+pv);
+        }
+    }
+
+    public void setPrixVente(double prixVente) {
+        this.prixVente = prixVente;
+    }
+
     public Composant(){
 
     }
 
+    public void mettreAjour(Connection co) throws Exception {
+        try {
+            co.setAutoCommit(false);
+            HistoriqueComposant histo = new HistoriqueComposant(this);
+            histo.enregistrer(co);
+            this.mettreAjourComposant(co);
+            co.commit();
+
+        } catch (Exception e) {
+            if (co != null) {
+                co.rollback();
+            }
+            throw e;
+        } finally {
+            if (co != null) {
+                co.setAutoCommit(true);
+            }
+        }
+    }
+
     public void enregistrer(Connection co) throws Exception {
-        PreparedStatement st = null;
-        String query = "insert into Composant (nomModele,description,idMarqueComposant,idTypeComposant) values (?, ?, ?, ?)";
         try {
             co.setAutoCommit(false);
 
-            st = co.prepareStatement(query);
-            st.setString(1, this.getNomModele());
-            st.setString(2, this.getDescription());
-            st.setString(3, this.getMarqueComposant().getId());
-            st.setString(4, this.getTypeComposant().getId());
-            st.executeUpdate();
-
+            this.initPK(co);
+            this.enregistrerComposant(co);
+            HistoriqueComposant histo = new HistoriqueComposant(this);
+            histo.enregistrer(co);
             co.commit();
-        } catch(Exception e) {
-            if(co!=null) {
+
+        } catch (Exception e) {
+            if (co != null) {
                 co.rollback();
             }
+            throw e;
+        } finally {
+            if (co != null) {
+                co.setAutoCommit(true);
+            }
+        }
+    }
+
+    void initPK(Connection co) throws Exception {
+        PreparedStatement st = null;
+        ResultSet res = null;
+        String query = "select ('CMP') || LPAD(nextval('s_composant')::TEXT, 6, '0') as seqVal";
+        try {
+            st = co.prepareStatement(query);
+            res = st.executeQuery();
+            if (res.next()) {
+                this.setId(res.getString("seqVal"));
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (res != null) {
+                res.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+        }
+    }
+
+    public void mettreAjourComposant(Connection co) throws Exception {
+        PreparedStatement st = null;
+        String query = "update composant set d_prixVente=(?) where id=(?)";
+        try {
+
+            st = co.prepareStatement(query);
+            st.setDouble(1, this.getPrixVente());
+            st.setString(2, this.getId());
+            st.executeUpdate();
+
+        } catch(Exception e) {
             throw e;
         } 
         finally {
             if (st != null) {
                 st.close();
             }
-            if(co!=null) {
-                co.setAutoCommit(true);
+        }
+    }
+
+    public void enregistrerComposant(Connection co) throws Exception {
+        PreparedStatement st = null;
+        String query = "insert into Composant (id, nomModele,description,idMarqueComposant,idTypeComposant, d_prixVente) values (?, ?, ?, ?, ?, ?)";
+        try {
+
+            st = co.prepareStatement(query);
+            st.setString(1, this.getId());
+            st.setString(2, this.getNomModele());
+            st.setString(3, this.getDescription());
+            st.setString(4, this.getMarqueComposant().getId());
+            st.setString(5, this.getTypeComposant().getId());
+            st.setDouble(6, this.getPrixVente());
+            st.executeUpdate();
+
+        } catch(Exception e) {
+            throw e;
+        } 
+        finally {
+            if (st != null) {
+                st.close();
             }
         }
     }
@@ -227,7 +411,7 @@ public class Composant {
                 composants[i].setDescription(res.getString("description"));
                 composants[i].setNomModele(res.getString("nommodele"));
                 composants[i].setStockComposant(new StockComposant(res.getInt("stockcomposant")));
-
+                composants[i].setPrixVente(res.getDouble("d_prixvente"));
                 i++;
             }
 
@@ -242,5 +426,11 @@ public class Composant {
             }
         }
         return composants;
+    }
+
+    @Override
+    public String toString() {
+        return "Composant [id=" + id + ", marqueComposant=" + marqueComposant.toString() + ", typeComposant=" + typeComposant.toString()
+                + ", nomModele=" + nomModele + ", description=" + description + "]";
     }
 }
